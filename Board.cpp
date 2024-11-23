@@ -121,7 +121,7 @@ bool Board::movePlayer(int player_index) {
     }
 
     // apply effects from the tile the player lands on
-    Tile &currentTile = _tiles[player_index][_player_positions[player_index]];
+    Tile currentTile = _tiles[player_index][_player_positions[player_index]];
     auto [prideChange, staminaChange, strengthChange, wisdomChange] = currentTile.event();
 
     players[player_index].setPride(players[player_index].getPride() + prideChange);
@@ -145,7 +145,7 @@ int Board::getPlayerPosition(int player_index) const {
     return -1; // invalid player index
 }
 
-// provides access to a player object by index
-Player& Board::getPlayer(int player_index) {
+// returns a copy of the player object by index
+Player Board::getPlayer(int player_index) {
     return players[player_index];
 }
