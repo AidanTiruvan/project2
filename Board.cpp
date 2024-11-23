@@ -1,310 +1,151 @@
 #include "Board.h"
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
+
 #define RED "\033[48;2;230;10;10m"
-#define GREEN "\033[48;2;34;139;34m"  /* Grassy Green (34,139,34) */
+#define GREEN "\033[48;2;34;139;34m"
 #define BLUE "\033[48;2;10;10;230m"
 #define PINK "\033[48;2;255;105;180m"
 #define BROWN "\033[48;2;139;69;19m"
 #define PURPLE "\033[48;2;128;0;128m"
-#define ORANGE "\033[48;2;230;115;0m" /* Orange (230,115,0) */
-#define GREY "\033[48;2;128;128;128m" /* Grey (128,128,128) */
+#define ORANGE "\033[48;2;230;115;0m"
+#define GREY "\033[48;2;128;128;128m"
 #define RESET "\033[0m"
 
-void Board::initializeBoard()
-{
-    // Seed random number generator in your main function once
-    for (int i = 0; i < 3; i++) //CHANGE FOR NUM OF PLAYERS
-    {
-        //IF ELSE STATEMENT TO SAY WHICH INITIALIZE TILES TO CALL
-        initializeTiles(i);  // This ensures each lane has a unique tile distribution
-    }
-}
+// default constructor for single-player board
+Board::Board() {
+    _player_count = 1;
+    _player_positions[0] = 0;
 
-#include <cstdlib> // For rand() and srand()
-#include <ctime>   // For time()
-
-void Board::initializeTiles(int player_index) //WILL BE DELETED, HERE FOR VISUALIZATION
-{
-    Tile temp;
-    int green_count = 0;
-    int total_tiles = _BOARD_SIZE;
-    // Keep track of green tile positions to ensure we place exactly 30 greens
-    for (int i = 0; i < total_tiles; i++)
-    {
-        if (i == total_tiles - 1) {
-            // Set the last tile as Orange for "Pride Rock"
-            temp.color = 'O';
-        } 
-        else if (i == 0) {
-            // Set the first tile as grey for start
-            temp.color = 'Y';
-        } 
-        else if (green_count < 30 && (rand() % (total_tiles - i) < 30 - green_count)) {
-            temp.color = 'G';
-            green_count++;
-        }
-        else
-        {
-            // Randomly assign one of the other colors: Blue, Pink, Brown, Red, Purple
-            int color_choice = rand() % 5;
-            switch (color_choice)
-            {
-                case 0:
-                    temp.color = 'B'; // Blue
-                    break;
-                case 1:
-                    temp.color = 'P'; // Pink
-                    break;
-                case 2:
-                    temp.color = 'N'; // Brown
-                    break;
-                case 3:
-                    temp.color = 'R'; // Red
-                    break;
-                case 4:
-                    temp.color = 'U'; // Purple
-                    break;
-            }
-        }
-
-        // Assign the tile to the board for the specified lane
-        _tiles[player_index][i] = temp;
-    }
-}
-
-//NEED PLAYER PATH CHOICE TO AFFECT WHICH INITIALIZE TILES IS CALLED
-//DETERMINE HOW WE WANT RANDOMIZATION TO BE BALANCED
-void Board::initializeTilesPride(int player_index)
-{
-    Tile temp;
-    int green_count = 0;
-    int total_tiles = _BOARD_SIZE;
-    // Keep track of green tile positions to ensure we place exactly 30 greens
-    for (int i = 0; i < total_tiles; i++)
-    {
-        if (i == total_tiles - 1) {
-            // Set the last tile as Orange for "Pride Rock"
-            temp.color = 'O';
-        } 
-        else if (i == 0) {
-            // Set the first tile as grey for start
-            temp.color = 'Y';
-        } 
-        else if (green_count < 30 && (rand() % (total_tiles - i) < 30 - green_count)) {
-            temp.color = 'G';
-            green_count++;
-        }
-        else
-        {
-            // Randomly assign one of the other colors: Blue, Pink, Brown, Red, Purple
-            int color_choice = rand() % 5;
-            switch (color_choice)
-            {
-                case 0:
-                    temp.color = 'B'; // Blue
-                    break;
-                case 1:
-                    temp.color = 'P'; // Pink
-                    break;
-                case 2:
-                    temp.color = 'N'; // Brown
-                    break;
-                case 3:
-                    temp.color = 'R'; // Red
-                    break;
-                case 4:
-                    temp.color = 'U'; // Purple
-                    break;
-            }
-        }
-
-        // Assign the tile to the board for the specified lane
-        _tiles[player_index][i] = temp;
-    }
-}
-
-//SAME HERE AS ABOVE FUNCTION
-void Board::initializeTilesTrain(int player_index)
-{
-    Tile temp;
-    int green_count = 0;
-    int total_tiles = _BOARD_SIZE;
-    // Keep track of green tile positions to ensure we place exactly 30 greens
-    for (int i = 0; i < total_tiles; i++)
-    {
-        if (i == total_tiles - 1) {
-            // Set the last tile as Orange for "Pride Rock"
-            temp.color = 'O';
-        } 
-        else if (i == 0) {
-            // Set the first tile as grey for start
-            temp.color = 'Y';
-        } 
-        else if (green_count < 30 && (rand() % (total_tiles - i) < 30 - green_count)) {
-            temp.color = 'G';
-            green_count++;
-        }
-        else
-        {
-            // Randomly assign one of the other colors: Blue, Pink, Brown, Red, Purple
-            int color_choice = rand() % 5;
-            switch (color_choice)
-            {
-                case 0:
-                    temp.color = 'B'; // Blue
-                    break;
-                case 1:
-                    temp.color = 'P'; // Pink
-                    break;
-                case 2:
-                    temp.color = 'N'; // Brown
-                    break;
-                case 3:
-                    temp.color = 'R'; // Red
-                    break;
-                case 4:
-                    temp.color = 'U'; // Purple
-                    break;
-            }
-        }
-
-        // Assign the tile to the board for the specified lane
-        _tiles[player_index][i] = temp;
-    }
-}
-
-
-Board::Board()
-{
-     _player_count = 1;
-
-     // Initialize player position
-     _player_position[0] = 0;
-
-     // Initialize tiles
-     initializeTiles(0);
-}
-
-
-Board::Board(int player_count)
-{
-    if (player_count > _MAX_PLAYERS)
-    {
-        _player_count = _MAX_PLAYERS;
-    }
-    else
-    {
-        _player_count = player_count;
-    }
-
-    // Initialize player position
-    for (int i = 0; i < _player_count; i++)
-    {
-        _player_position[i] = 0;
-    }
-
-    // Initialize tiles
-
+    // initialize the board for a single player
     initializeBoard();
 }
 
-bool Board::isPlayerOnTile(int player_index, int pos)
-{
-    if (_player_position[player_index] == pos)
-    {
-        return true;
+// constructor for custom number of players
+Board::Board(int player_count) {
+    _player_count = (player_count > _MAX_PLAYERS) ? _MAX_PLAYERS : player_count;
+
+    // initialize positions for each player
+    for (int i = 0; i < _player_count; i++) {
+        _player_positions[i] = 0;
     }
+
+    // initialize the board
+    initializeBoard();
+}
+
+// initializes the board for both paths (cub training and pride lands)
+void Board::initializeBoard() {
+    for (int pathType = 0; pathType < 2; pathType++) { // two paths: 0 = cub training, 1 = pride lands
+        initializeTiles(pathType);
+    }
+}
+
+// initializes tiles for a specific path
+void Board::initializeTiles(int pathType) {
+    for (int i = 0; i < _BOARD_SIZE; i++) {
+        Tile tile;
+        if (i == 0) {
+            tile.setColor('Y'); // starting tile
+        } else if (i == _BOARD_SIZE - 1) {
+            tile.setColor('O'); // pride rock
+        } else {
+            int random = rand() % 100;
+            if (random < 40) {
+                tile.setColor('G'); // regular
+            } else if (random < 60) {
+                tile.setColor('B'); // oasis
+            } else if (random < 75) {
+                tile.setColor('P'); // counseling
+            } else if (random < 85) {
+                tile.setColor('R'); // graveyard
+            } else if (random < 95) {
+                tile.setColor('N'); // hyenas
+            } else {
+                tile.setColor('U'); // challenge
+            }
+        }
+        _tiles[pathType][i] = tile;
+    }
+}
+
+// displays a single tile with color and player presence
+void Board::displayTile(int player_index, int pos) {
+    std::string color = "";
+    bool playerOnTile = isPlayerOnTile(player_index, pos);
+
+    switch (_tiles[player_index][pos].getColor()) {
+        case 'R': color = RED; break;
+        case 'G': color = GREEN; break;
+        case 'B': color = BLUE; break;
+        case 'P': color = PINK; break;
+        case 'N': color = BROWN; break;
+        case 'U': color = PURPLE; break;
+        case 'O': color = ORANGE; break;
+        case 'Y': color = GREY; break;
+    }
+
+    if (playerOnTile) {
+        std::cout << color << "|" << (player_index + 1) << "|" << RESET;
+    } else {
+        std::cout << color << "| |" << RESET;
+    }
+}
+
+// displays the track for a specific player
+void Board::displayTrack(int player_index) {
+    for (int i = 0; i < _BOARD_SIZE; i++) {
+        displayTile(player_index, i);
+    }
+    std::cout << std::endl;
+}
+
+// displays the entire board for all players
+void Board::displayBoard() {
+    for (int i = 0; i < _player_count; i++) {
+        std::cout << "player " << i + 1 << "'s path:\n";
+        displayTrack(i);
+        std::cout << std::endl;
+    }
+}
+
+// moves a player forward and applies tile effects
+bool Board::movePlayer(int player_index) {
+    _player_positions[player_index]++;
+
+    // check if the player reached the final tile
+    if (_player_positions[player_index] >= _BOARD_SIZE) {
+        _player_positions[player_index] = _BOARD_SIZE - 1;
+        return true; // player reached pride rock
+    }
+
+    // apply effects from the tile the player lands on
+    Tile &currentTile = _tiles[player_index][_player_positions[player_index]];
+    auto [prideChange, staminaChange, strengthChange, wisdomChange] = currentTile.event();
+
+    players[player_index].setPride(players[player_index].getPride() + prideChange);
+    players[player_index].addStamina(staminaChange);
+    players[player_index].addStrength(strengthChange);
+    players[player_index].addWisdom(wisdomChange);
+
     return false;
 }
 
-void Board::displayTile(int player_index, int pos)
-{
-    // string space = "                                       ";
-    string color = "";
-    int player = isPlayerOnTile(player_index, pos);
-
-    // Template for displaying a tile: <line filler space> <color start> |<player symbol or blank space>| <reset color> <line filler space> <endl>
-
-    // Determine color to display
-    if (_tiles[player_index][pos].color == 'R')
-    {
-        color = RED;
-    }
-    else if (_tiles[player_index][pos].color == 'G')
-    {
-        color = GREEN;
-    }
-    else if (_tiles[player_index][pos].color == 'B')
-    {
-        color = BLUE;
-    }
-    else if (_tiles[player_index][pos].color == 'U')
-    {
-        color = PURPLE;
-    }
-    else if (_tiles[player_index][pos].color == 'N')
-    {
-        color = BROWN;
-    }
-    else if (_tiles[player_index][pos].color == 'P')
-    {
-        color = PINK;
-    }
-    else if (_tiles[player_index][pos].color == 'O')
-    {
-        color = ORANGE;
-    }
-    else if (_tiles[player_index][pos].color == 'Y')
-    {
-        color = GREY;
-    }
-
-     if (player == true)
-    {
-        cout << color << "|" << (player_index + 1) << "|" << RESET;
-    }
-    else
-    {
-        cout << color << "| |" << RESET;
-    }
+// checks if a player is on a specific tile
+bool Board::isPlayerOnTile(int player_index, int pos) {
+    return (_player_positions[player_index] == pos);
 }
 
-void Board::displayTrack(int player_index)
-{
-    for (int i = 0; i < _BOARD_SIZE; i++)
-    {
-        displayTile(player_index, i);
+// gets the current position of a player
+int Board::getPlayerPosition(int player_index) const {
+    if (player_index >= 0 && player_index < _player_count) {
+        return _player_positions[player_index];
     }
-    cout << endl;
+    return -1; // invalid player index
 }
 
-void Board::displayBoard() {
-    for (int i = 0; i < 3; i++) { // this loops through each player track UPDATE VALUE FOR NUM OF PLAYERS
-        displayTrack(i); // displays the track for the current player
-        cout << endl;    // add an extra line between the two lanes cuz original format sucked
-    }
-}
-
-
-
-
-bool Board::movePlayer(int player_index) {
-    // update and increment each player on turn according to spinner
-    _player_position[player_index]++;
-    
-    // makes sure the player doesn't exceed the board size and doesnt have random spazms
-    if (_player_position[player_index] >= _BOARD_SIZE) {
-        _player_position[player_index] = _BOARD_SIZE - 1;
-        return true; // works if the player meets the end of the game, doesn't work with anything other than 2 players
-    }
-    return false; // player hasnt reached the end, only here for debugging cuz they will reach the end 
-}
-
-
-int Board::getPlayerPosition(int player_index) const
-{
-     if (player_index >= 0 && player_index <= _player_count)
-     {
-         return _player_position[player_index];
-     }
-     return -1;
+// provides access to a player object by index
+Player& Board::getPlayer(int player_index) {
+    return players[player_index];
 }
