@@ -24,7 +24,11 @@ Board::Board() {
 
 // constructor for custom number of players
 Board::Board(int player_count) {
-    _player_count = (player_count > _MAX_PLAYERS) ? _MAX_PLAYERS : player_count;
+    if(player_count > _MAX_PLAYERS){
+        _player_count = _MAX_PLAYERS;
+    }else{
+        _player_count = player_count;
+    }
 
     // initialize positions for each player
     for (int i = 0; i < _player_count; i++) {
