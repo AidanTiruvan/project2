@@ -11,12 +11,12 @@ int main()
     int numPlayers;
     do
     {
-        std::cout << "Enter the number of players (2-4) ";
-        std::cin >> numPlayers;
+        cout << "Enter the number of players (2-4) ";
+        cin >> numPlayers;
 
         if (numPlayers < 2 || numPlayers > 4)
         {
-            std::cout << "Thats not 2-4 players try again " << std::endl;
+            cout << "Thats not 2-4 players try again " << endl;
         }
     } while (numPlayers < 2 || numPlayers > 4);
 
@@ -24,7 +24,7 @@ int main()
     Board board(numPlayers);
 
     // displays the board for the first time in its starting state
-    std::cout << "\nInitial Board State:\n";
+    cout << "\nInitial Board State:\n";
     board.displayBoard();
 
     bool game_over = false;

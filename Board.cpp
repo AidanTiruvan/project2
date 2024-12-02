@@ -30,6 +30,14 @@ Board::Board(int player_count) {
         _player_count = player_count;
     }
 
+//Give each player in the Player array a path type, should be error handled by setPath
+    string path_type;
+    for(int i = 0; i < _player_count; i++){
+        cout<<"Player "<<i + 1<<", please select your path. 'Pride Lands' or 'Cub Training'."<<endl;
+        getline(cin, path_type);
+        players[i].setPath(path_type);
+    }
+
     // initialize positions for each player
     for (int i = 0; i < _player_count; i++) {
         _player_positions[i] = 0;
@@ -41,42 +49,70 @@ Board::Board(int player_count) {
 
 // initializes the board for both paths (cub training and pride lands)
 void Board::initializeBoard() {
-    for (int pathType = 0; pathType < 2; pathType++) { // two paths: 0 = cub training, 1 = pride lands
-        initializeTiles(pathType);
+    for (int i = 0; i < _player_count; i++) {
+        initializeTiles(players[i].getPath(), i);
     }
 }
 
 // initializes tiles for a specific path
-void Board::initializeTiles(int pathType) {
-    for (int i = 0; i < _BOARD_SIZE; i++) {
-        Tile tile;
-        if (i == 0) {
-            tile.setColor('Y'); // starting tile
-        } else if (i == _BOARD_SIZE - 1) {
-            tile.setColor('O'); // pride rock
-        } else {
-            int random = rand() % 100;
-            if (random < 40) {
-                tile.setColor('G'); // regular
-            } else if (random < 60) {
-                tile.setColor('B'); // oasis
-            } else if (random < 75) {
-                tile.setColor('P'); // counseling
-            } else if (random < 85) {
-                tile.setColor('R'); // graveyard
-            } else if (random < 95) {
-                tile.setColor('N'); // hyenas
+void Board::initializeTiles(char pathType, int j) {
+    //if player picks pridelands this happens
+    if(pathType == 'P'){
+        for (int i = 0; i < _BOARD_SIZE; i++) {
+            Tile tile;
+            if (i == 0) {
+                tile.setColor('Y'); // starting tile
+            } else if (i == _BOARD_SIZE - 1) {
+                tile.setColor('O'); // pride rock
             } else {
-                tile.setColor('U'); // challenge
+                int random = rand() % 100;
+                if (random < 40) {
+                    tile.setColor('G'); // regular
+                } else if (random < 60) {
+                    tile.setColor('B'); // oasis
+                } else if (random < 75) {
+                    tile.setColor('P'); // counseling
+                } else if (random < 85) {
+                    tile.setColor('R'); // graveyard
+                } else if (random < 95) {
+                    tile.setColor('N'); // hyenas
+                } else {
+                    tile.setColor('U'); // challenge
+                }
             }
+            _tiles[j][i] = tile;
         }
-        _tiles[pathType][i] = tile;
+    }else{ //If player picks cub training this happens
+        for (int i = 0; i < _BOARD_SIZE; i++) {
+            Tile tile;
+            if (i == 0) {
+                tile.setColor('Y'); // starting tile
+            } else if (i == _BOARD_SIZE - 1) {
+                tile.setColor('O'); // pride rock
+            } else {
+                int random = rand() % 100;
+                if (random < 40) {
+                    tile.setColor('G'); // regular
+                } else if (random < 60) {
+                    tile.setColor('B'); // oasis
+                } else if (random < 75) {
+                    tile.setColor('P'); // counseling
+                } else if (random < 85) {
+                    tile.setColor('R'); // graveyard
+                } else if (random < 95) {
+                    tile.setColor('N'); // hyenas
+                } else {
+                    tile.setColor('U'); // challenge
+                }
+            }
+            _tiles[j][i] = tile;
+        }
     }
 }
 
 // displays a single tile with color and player presence
 void Board::displayTile(int player_index, int pos) {
-    std::string color = "";
+    string color = "";
     bool playerOnTile = isPlayerOnTile(player_index, pos);
 
     switch (_tiles[player_index][pos].getColor()) {
@@ -108,9 +144,9 @@ void Board::displayTrack(int player_index) {
 // displays the entire board for all players
 void Board::displayBoard() {
     for (int i = 0; i < _player_count; i++) {
-        std::cout << "player " << i + 1 << "'s path:\n";
+        cout << "player " << i + 1 << "'s path:\n";
         displayTrack(i);
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 

@@ -158,12 +158,12 @@ void Player::setPath(string choice) {
         if (choice == "Pride Lands") {
             _path = 'P';
             break;
-        } else if (choice == "Train Cub") {
+        } else if (choice == "Cub Training") {
             _path = 'T';
             break;
         }
         cout << "Invalid Choice. Please enter again: ";
-        cin >> choice;
+        getline(cin, choice);
     }
 }
 
