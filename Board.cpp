@@ -56,53 +56,64 @@ void Board::initializeBoard() {
 
 // initializes tiles for a specific path
 void Board::initializeTiles(char pathType, int j) {
+    int green_count = 0;
+    Tile tile;
     //if player picks pridelands this happens
     if(pathType == 'P'){
         for (int i = 0; i < _BOARD_SIZE; i++) {
-            Tile tile;
-            if (i == 0) {
-                tile.setColor('Y'); // starting tile
-            } else if (i == _BOARD_SIZE - 1) {
-                tile.setColor('O'); // pride rock
+            //Track of green tile positions to ensure we place exactly 30 greens
+            if (i == _BOARD_SIZE - 1) {
+            // Set the last tile as Orange for "Pride Rock"
+                tile.setColor('O');
+            } else if (i == 0) {
+            // Set the last tile as Orange for "Pride Rock"
+                tile.setColor('Y');
+            } else if (green_count < 30 && (rand() % (_BOARD_SIZE - i) <= 30 - green_count)) {
+                tile.setColor('G');
+                green_count++;
             } else {
-                int random = rand() % 100;
-                if (random < 40) {
-                    tile.setColor('G'); // regular
-                } else if (random < 60) {
-                    tile.setColor('B'); // oasis
-                } else if (random < 75) {
-                    tile.setColor('P'); // counseling
-                } else if (random < 85) {
-                    tile.setColor('R'); // graveyard
-                } else if (random < 95) {
-                    tile.setColor('N'); // hyenas
-                } else {
-                    tile.setColor('U'); // challenge
+            // Randomly assign one of the other colors: Blue, Pink, Brown, Red,Purple
+                int color_choice = rand() % 100;
+                if(color_choice < 30){
+                    tile.setColor('P'); //30 Percent chance for advisor tile
+                }else if(color_choice < 45){
+                    tile.setColor('B'); //15 percent chance for oasis tile
+                }else if(color_choice < 60){
+                    tile.setColor('R'); //15 percent chance for graveyard tile
+                }else if(color_choice < 80){
+                    tile.setColor('N'); //20 percent chance for hyena tile
+                }else{
+                    tile.setColor('U'); //20 percent chance for riddle tile
                 }
             }
             _tiles[j][i] = tile;
         }
     }else{ //If player picks cub training this happens
+            //  WILL WANT TO MAKE IT SO ADVISORS GIVE MORE BONUS ON GREEN STUFF AND OASIS TO NEGATE HOW MUCH MORE BAD STUFF
         for (int i = 0; i < _BOARD_SIZE; i++) {
-            Tile tile;
-            if (i == 0) {
-                tile.setColor('Y'); // starting tile
-            } else if (i == _BOARD_SIZE - 1) {
-                tile.setColor('O'); // pride rock
+            //Track of green tile positions to ensure we place exactly 30 greens
+            if (i == _BOARD_SIZE - 1) {
+            // Set the last tile as Orange for "Pride Rock"
+                tile.setColor('O');
+            } else if (i == 0) {
+            // Set the last tile as Orange for "Pride Rock"
+                tile.setColor('Y');
+            } else if (green_count < 30 && (rand() % (_BOARD_SIZE - i) <= 30 - green_count)) {
+                tile.setColor('G');
+                green_count++;
             } else {
-                int random = rand() % 100;
-                if (random < 40) {
-                    tile.setColor('G'); // regular
-                } else if (random < 60) {
-                    tile.setColor('B'); // oasis
-                } else if (random < 75) {
-                    tile.setColor('P'); // counseling
-                } else if (random < 85) {
-                    tile.setColor('R'); // graveyard
-                } else if (random < 95) {
-                    tile.setColor('N'); // hyenas
-                } else {
-                    tile.setColor('U'); // challenge
+            // Randomly assign one of the other colors: Blue, Pink, Brown, Red,Purple
+                int color_choice = rand() % 100;
+                if(color_choice < 10){
+                    tile.setColor('P'); //10 Percent chance for advisor tile
+                }else if(color_choice < 25){
+                    tile.setColor('B'); //15 percent chance for oasis tile
+                }else if(color_choice < 55){
+                    tile.setColor('R'); //30 percent chance for graveyard tile
+                }else if(color_choice < 80){
+                    tile.setColor('N'); //25 percent chance for hyena tile
+                }else{
+                    tile.setColor('U'); //20 percent chance for riddle tile
                 }
             }
             _tiles[j][i] = tile;
