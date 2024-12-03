@@ -153,17 +153,17 @@ void Player::setAge(int age){
     }
 }
 
-void Player::setPath(string choice) {
+void Player::setPath(char choice) {
     while (true) {
-        if (choice == "Pride Lands") {
+        if (choice == 'P') {
             _path = 'P';
             break;
-        } else if (choice == "Cub Training") {
+        } else if (choice == 'T') {
             _path = 'T';
             break;
         }
         cout << "Invalid Choice. Please enter again: ";
-        getline(cin, choice);
+        cin>>choice;
     }
 }
 

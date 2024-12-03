@@ -34,6 +34,7 @@ class Player{
         int getAge();
         //get path
         char getPath();
+        
 
         //Setters
 
@@ -62,7 +63,7 @@ class Player{
         //set age
         void setAge(int);
         //set path
-        void setPath(string);
+        void setPath(char);
         //set advisor
         void setAdvisor(int);
 

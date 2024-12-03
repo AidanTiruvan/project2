@@ -31,10 +31,10 @@ Board::Board(int player_count) {
     }
 
 //Give each player in the Player array a path type, should be error handled by setPath
-    string path_type;
+    char path_type;
     for(int i = 0; i < _player_count; i++){
-        cout<<"Player "<<i + 1<<", please select your path. 'Pride Lands' or 'Cub Training'."<<endl;
-        getline(cin, path_type);
+        cout<<"Player "<<i + 1<<", please select your path. Pride Lands (P) or Cub Training (T)."<<endl;
+        cin>>path_type;
         players[i].setPath(path_type);
     }
 
@@ -55,6 +55,7 @@ void Board::initializeBoard() {
 }
 
 // initializes tiles for a specific path
+//COULD ALSO ADD DIFFERENT CHANCES AT DIFFERENT PARTS OF THE BOARD
 void Board::initializeTiles(char pathType, int j) {
     int green_count = 0;
     Tile tile;
@@ -155,9 +156,11 @@ void Board::displayTrack(int player_index) {
 // displays the entire board for all players
 void Board::displayBoard() {
     for (int i = 0; i < _player_count; i++) {
-        cout << "player " << i + 1 << "'s path:\n";
+        //cout << "player " << i + 1 << "'s path:\n";
         displayTrack(i);
-        cout << endl;
+        if(i == _player_count - 1){
+            cout << endl;
+        }
     }
 }
 
@@ -199,4 +202,12 @@ int Board::getPlayerPosition(int player_index) const {
 // returns a copy of the player object by index
 Player Board::getPlayer(int player_index) {
     return players[player_index];
+}
+
+void Board::displayStats(int index){
+    players[index].printStats();
+}
+
+void Board::playerPride(int index){
+    cout<<"Player "<<index + 1<<"'s Pride Points: "<<players[index].getPride()<<endl;
 }

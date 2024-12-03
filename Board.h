@@ -38,6 +38,11 @@ public:
     bool movePlayer(int player_index);    // moves a player forward and triggers the effect of the tile they land on
     int getPlayerPosition(int player_index) const; // gets a player's current position
     Player getPlayer(int player_index);  // returns a copy of a player object
+
+    //Stats
+    void displayStats(int index);
+    void playerPride(int index);
+    void playerAdvisor(int index);
 };
 
 #endif
