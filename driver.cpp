@@ -89,7 +89,7 @@ int main()
                                     subExit = true;
                                     break;
                                 case 2:
-                                    board.displayStats(i); //Will need to remember player name input
+                                    cout<<"Pride Points: "<<board.getPlayer(i).getPride(); //Will need to remember player name input
                                     subExit = true;
                                     break;
                                 case 3:
