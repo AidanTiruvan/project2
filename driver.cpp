@@ -10,52 +10,6 @@ int main()
 {
     srand(time(0)); // random number generator to make sure that on the start of the game, the numbers are always different
 
-
-    //Importing Files
-    ifstream characters("chars.txt");
-    ifstream advisors("advisors.txt");
-    ifstream riddles("riddles.txt");
-    ifstream gameRules("game_rules.txt");
-    ifstream events("random_events.txt");
-    if(characters.fail() || advisors.fail() || riddles.fail() || gameRules.fail() || events.fail()){
-        cout<<"One or more files failed to open, quitting program."<<endl;
-        return 0;
-    }
-    vector<string> characterVec;
-    vector<string> advisorVec;
-    vector<string> riddleVec;
-    vector<string> eventsVec;
-    vector<string> ruleVec;
-
-    string input;
-    while(!characters.eof()){
-        getline(characters, input);
-        characterVec.push_back(input);
-    }
-    while(!advisors.eof()){
-        getline(advisors, input);
-        advisorVec.push_back(input);
-    }
-    while(!riddles.eof()){
-        getline(riddles, input);
-        riddleVec.push_back(input);
-    }
-    while(!gameRules.eof()){
-        getline(gameRules, input);
-        ruleVec.push_back(input);
-    }
-    while(!events.eof()){
-        getline(events, input);
-        eventsVec.push_back(input);
-    }
-
-    characters.close();
-    advisors.close();
-    riddles.close();
-    gameRules.close();
-    events.close();
-
-
     int numPlayers;
     do
     {
@@ -161,7 +115,8 @@ int main()
                         }
                         break;
                     case 4:
-                        //Advisor Code will go here
+                        cout<<endl;
+                        cout<<board.getPlayer(i).getAdvisor()<<endl;
                         break;
                     case 5:
                         //Will print rules from imported game rules txt file

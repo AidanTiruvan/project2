@@ -24,6 +24,7 @@ Board::Board() {
 
 // constructor for custom number of players
 Board::Board(int player_count) {
+    importFiles();
     if(player_count > _MAX_PLAYERS){
         _player_count = _MAX_PLAYERS;
     }else{
@@ -35,7 +36,27 @@ Board::Board(int player_count) {
     for(int i = 0; i < _player_count; i++){
         cout<<"Player "<<i + 1<<", please select your path. Pride Lands (P) or Cub Training (T)."<<endl;
         cin>>path_type;
+        int removeIndex;
+        int choice;
+        bool valid = false;
         players[i].setPath(path_type);
+        if(players[i].getPath() == 'T'){
+            cout<<"Player "<<i + 1<<"please select your advisor."<<endl;
+            players[i].printAdvisors(_advisorVec);
+            cin>>choice;
+            while(!valid){
+                if(choice > 0 && choice < _advisorVec.size() + 1){
+                    valid = true;
+                }else{
+                    cout<<"Invalid. Pick again."<<endl;
+                    cin>>choice;
+                }
+            players[i].setAdvisor(_advisorVec, choice);
+            removeIndex = choice - 1;
+            _advisorVec.erase(_advisorVec.begin() + removeIndex);
+            }
+
+        }
     }
 
     // initialize positions for each player
@@ -51,9 +72,6 @@ Board::Board(int player_count) {
 void Board::initializeBoard() {
     for (int i = 0; i < _player_count; i++) {
         initializeTiles(players[i].getPath(), i);
-        if(players[i].getPath() == 'T'){
-            //Present advisor list and let them pick.
-        }
     }
 }
 
@@ -214,3 +232,43 @@ void Board::displayStats(int index){
 void Board::playerPride(int index){
     cout<<"Player "<<index + 1<<"'s Pride Points: "<<players[index].getPride()<<endl;
 }
+
+//Imports
+void Board::importFiles(){
+    ifstream characters("chars.txt");
+    ifstream advisors("advisors.txt");
+    ifstream riddles("riddles.txt");
+    ifstream gameRules("game_rules.txt");
+    ifstream events("random_events.txt");
+    if(characters.fail() || advisors.fail() || riddles.fail() || gameRules.fail() || events.fail()){
+        cout<<"One or more files failed to open, quitting program."<<endl;
+        exit(0);
+    }else{
+    string input;
+    while(!characters.eof()){
+        getline(characters, input);
+        _characterVec.push_back(input);
+    }
+    while(!advisors.eof()){
+        getline(advisors, input);
+        _advisorVec.push_back(input);
+    }
+    while(!riddles.eof()){
+        getline(riddles, input);
+        _riddleVec.push_back(input);
+    }
+    while(!gameRules.eof()){
+        getline(gameRules, input);
+        _ruleVec.push_back(input);
+    }
+    while(!events.eof()){
+        getline(events, input);
+        _eventsVec.push_back(input);
+    }
+    characters.close();
+    advisors.close();
+    riddles.close();
+    gameRules.close();
+    events.close();
+    }
+    }

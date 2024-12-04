@@ -35,6 +35,8 @@ class Player{
         int getAge();
         //get path
         char getPath();
+        //get advisor
+        string getAdvisor();
         
 
         //Setters
@@ -66,7 +68,7 @@ class Player{
         //set path
         void setPath(char);
         //set advisor
-        void setAdvisor(vector<string> advisors);
+        void setAdvisor(vector<string> advisors, int);
 
         //Others
 
@@ -76,6 +78,8 @@ class Player{
         void toPrideLands();
         //print stats
         void printStats();
+        //show advisors
+        void printAdvisors(vector<string>);
 
 };
 

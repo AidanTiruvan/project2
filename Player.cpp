@@ -67,6 +67,10 @@ char Player::getPath(){
     return _path;
 }
 
+string Player::getAdvisor(){
+    return _advisor;
+}
+
 //Setters
 
 void Player::setName(string name){
@@ -168,27 +172,18 @@ void Player::setPath(char choice) {
 }
 
 
-void Player::setAdvisor(vector<string> advisors){ //COULD RETURN AN INDEX VALUE TO REMOVE THAT VALUE FROM THE ORIGINAL VECTOR
-    cout<<"Pick your advisor: "<<endl;
-    int choice;
-    bool valid = false;
-    for(int i = 1; i < advisors.size(); i++){
-        cout<<advisors[i]<<endl;
-    }
-    cin>>choice;
-    while(!valid){
-        switch(choice){
-            case 1:
-                _advisor = advisors[1]; //THIS WILL RETURN THE WHOLE LINE FOR ADIVSOR, MUST CHANGE
-                valid = true;
-                break;
-            case 2:
-            //just realized this wont work.
-        }
-    }
+void Player::setAdvisor(vector<string> advisors, int choice){ //COULD RETURN AN INDEX VALUE TO REMOVE THAT VALUE FROM THE ORIGINAL VECTOR
+    _advisor = advisors[choice - 1];
 }
+
 //Others
 
+void Player::printAdvisors(vector<string> advisors){
+    cout<<"Pick your advisor: "<<endl;
+    for(int i = 0; i < advisors.size(); i++){
+        cout<<advisors[i]<<endl;
+    }
+}
 void Player::trainCub(int strength, int stamina, int wisdom){
     addStrength(strength);
     addStamina(stamina);

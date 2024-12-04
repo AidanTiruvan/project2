@@ -3,6 +3,7 @@
 
 #include "Tile.h"
 #include "Player.h"
+#include <fstream>
 
 class Board
 {
@@ -21,6 +22,13 @@ private:
 
     // Tile initialization
     void initializeTiles(char pathType, int index);   // sets up the tiles for each path
+
+    //Imports
+    vector<string> _characterVec;
+    vector<string> _advisorVec;
+    vector<string> _riddleVec;
+    vector<string> _eventsVec;
+    vector<string> _ruleVec;
 
 public:
     // Constructors
@@ -43,6 +51,9 @@ public:
     void displayStats(int index);
     void playerPride(int index);
     void playerAdvisor(int index);
+
+    //Imports
+    void importFiles();
 };
 
 #endif
