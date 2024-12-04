@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -65,7 +66,7 @@ class Player{
         //set path
         void setPath(char);
         //set advisor
-        void setAdvisor(int);
+        void setAdvisor(vector<string> advisors);
 
         //Others
 

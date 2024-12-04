@@ -51,6 +51,9 @@ Board::Board(int player_count) {
 void Board::initializeBoard() {
     for (int i = 0; i < _player_count; i++) {
         initializeTiles(players[i].getPath(), i);
+        if(players[i].getPath() == 'T'){
+            //Present advisor list and let them pick.
+        }
     }
 }
 
