@@ -1,0 +1,9 @@
+Aidan and Zach's Wonderful Game of Life Ripoff Rules:
+Each Player picks a path, either Pride Lands or Cub Training
+If they pick Cub Training, they will pick an advisor up front
+Dont worry, you can still find advisors in the Pride Lands!
+Advisors will offer ability to escape dangerous situations and provide more stat/point gains
+Pride Lands offers upfront gains, with less chance of long term gains
+Training offers less upfront gains, with more chance of long term gains
+However, training means more time passes, and more threats are present!
+Will add more rules when we know what we want to do.

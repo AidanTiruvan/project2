@@ -67,6 +67,10 @@ char Player::getPath(){
     return _path;
 }
 
+string Player::getAdvisor(){
+    return _advisor;
+}
+
 //Setters
 
 void Player::setName(string name){
@@ -153,26 +157,33 @@ void Player::setAge(int age){
     }
 }
 
-void Player::setPath(string choice) {
+void Player::setPath(char choice) {
     while (true) {
-        if (choice == "Pride Lands") {
+        if (choice == 'P') {
             _path = 'P';
             break;
-        } else if (choice == "Train Cub") {
+        } else if (choice == 'T') {
             _path = 'T';
             break;
         }
         cout << "Invalid Choice. Please enter again: ";
-        cin >> choice;
+        cin>>choice;
     }
 }
 
 
-void Player::setAdvisor(int choice){
-    //Add int choices for different advisors
+void Player::setAdvisor(vector<string> advisors, int choice){ //COULD RETURN AN INDEX VALUE TO REMOVE THAT VALUE FROM THE ORIGINAL VECTOR
+    _advisor = advisors[choice - 1];
 }
+
 //Others
 
+void Player::printAdvisors(vector<string> advisors){
+    cout<<"Pick your advisor: "<<endl;
+    for(int i = 0; i < advisors.size(); i++){
+        cout<<advisors[i]<<endl;
+    }
+}
 void Player::trainCub(int strength, int stamina, int wisdom){
     addStrength(strength);
     addStamina(stamina);

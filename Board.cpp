@@ -24,10 +24,37 @@ Board::Board() {
 
 // constructor for custom number of players
 Board::Board(int player_count) {
+    importFiles();
     if(player_count > _MAX_PLAYERS){
         _player_count = _MAX_PLAYERS;
     }else{
         _player_count = player_count;
+    }
+
+//Give each player in the Player array a path type, should be error handled by setPath
+    char path_type;
+    for(int i = 0; i < _player_count; i++){
+        cout<<"Player "<<i + 1<<", please select your path. Pride Lands (P) or Cub Training (T)."<<endl;
+        cin>>path_type;
+        int choice;
+        bool valid = false;
+        players[i].setPath(path_type);
+        if(players[i].getPath() == 'T'){
+            cout<<"Player "<<i + 1<<", please select your advisor."<<endl;
+            players[i].printAdvisors(_advisorVec);
+            cin>>choice;
+            while(!valid){
+                if(choice > 0 && choice < _advisorVec.size() + 1){
+                    valid = true;
+                }else{
+                    cout<<"Invalid. Pick again."<<endl;
+                    cin>>choice;
+                }
+            }
+            players[i].setAdvisor(_advisorVec, choice);
+            _advisorVec.erase(_advisorVec.begin() + choice - 1);
+
+        }
     }
 
     // initialize positions for each player
@@ -41,42 +68,82 @@ Board::Board(int player_count) {
 
 // initializes the board for both paths (cub training and pride lands)
 void Board::initializeBoard() {
-    for (int pathType = 0; pathType < 2; pathType++) { // two paths: 0 = cub training, 1 = pride lands
-        initializeTiles(pathType);
+    for (int i = 0; i < _player_count; i++) {
+        initializeTiles(players[i].getPath(), i);
     }
 }
 
 // initializes tiles for a specific path
-void Board::initializeTiles(int pathType) {
-    for (int i = 0; i < _BOARD_SIZE; i++) {
-        Tile tile;
-        if (i == 0) {
-            tile.setColor('Y'); // starting tile
-        } else if (i == _BOARD_SIZE - 1) {
-            tile.setColor('O'); // pride rock
-        } else {
-            int random = rand() % 100;
-            if (random < 40) {
-                tile.setColor('G'); // regular
-            } else if (random < 60) {
-                tile.setColor('B'); // oasis
-            } else if (random < 75) {
-                tile.setColor('P'); // counseling
-            } else if (random < 85) {
-                tile.setColor('R'); // graveyard
-            } else if (random < 95) {
-                tile.setColor('N'); // hyenas
+//COULD ALSO ADD DIFFERENT CHANCES AT DIFFERENT PARTS OF THE BOARD
+void Board::initializeTiles(char pathType, int j) {
+    int green_count = 0;
+    Tile tile;
+    //if player picks pridelands this happens
+    if(pathType == 'P'){
+        for (int i = 0; i < _BOARD_SIZE; i++) {
+            //Track of green tile positions to ensure we place exactly 30 greens
+            if (i == _BOARD_SIZE - 1) {
+            // Set the last tile as Orange for "Pride Rock"
+                tile.setColor('O');
+            } else if (i == 0) {
+            // Set the last tile as Orange for "Pride Rock"
+                tile.setColor('Y');
+            } else if (green_count < 30 && (rand() % (_BOARD_SIZE - i) <= 30 - green_count)) {
+                tile.setColor('G');
+                green_count++;
             } else {
-                tile.setColor('U'); // challenge
+            // Randomly assign one of the other colors: Blue, Pink, Brown, Red,Purple
+                int color_choice = rand() % 100;
+                if(color_choice < 30){
+                    tile.setColor('P'); //30 Percent chance for advisor tile
+                }else if(color_choice < 45){
+                    tile.setColor('B'); //15 percent chance for oasis tile
+                }else if(color_choice < 60){
+                    tile.setColor('R'); //15 percent chance for graveyard tile
+                }else if(color_choice < 80){
+                    tile.setColor('N'); //20 percent chance for hyena tile
+                }else{
+                    tile.setColor('U'); //20 percent chance for riddle tile
+                }
             }
+            _tiles[j][i] = tile;
         }
-        _tiles[pathType][i] = tile;
+    }else{ //If player picks cub training this happens
+            //  WILL WANT TO MAKE IT SO ADVISORS GIVE MORE BONUS ON GREEN STUFF AND OASIS TO NEGATE HOW MUCH MORE BAD STUFF
+        for (int i = 0; i < _BOARD_SIZE; i++) {
+            //Track of green tile positions to ensure we place exactly 30 greens
+            if (i == _BOARD_SIZE - 1) {
+            // Set the last tile as Orange for "Pride Rock"
+                tile.setColor('O');
+            } else if (i == 0) {
+            // Set the last tile as Orange for "Pride Rock"
+                tile.setColor('Y');
+            } else if (green_count < 30 && (rand() % (_BOARD_SIZE - i) <= 30 - green_count)) {
+                tile.setColor('G');
+                green_count++;
+            } else {
+            // Randomly assign one of the other colors: Blue, Pink, Brown, Red,Purple
+                int color_choice = rand() % 100;
+                if(color_choice < 10){
+                    tile.setColor('P'); //10 Percent chance for advisor tile
+                }else if(color_choice < 25){
+                    tile.setColor('B'); //15 percent chance for oasis tile
+                }else if(color_choice < 55){
+                    tile.setColor('R'); //30 percent chance for graveyard tile
+                }else if(color_choice < 80){
+                    tile.setColor('N'); //25 percent chance for hyena tile
+                }else{
+                    tile.setColor('U'); //20 percent chance for riddle tile
+                }
+            }
+            _tiles[j][i] = tile;
+        }
     }
 }
 
 // displays a single tile with color and player presence
 void Board::displayTile(int player_index, int pos) {
-    std::string color = "";
+    string color = "";
     bool playerOnTile = isPlayerOnTile(player_index, pos);
 
     switch (_tiles[player_index][pos].getColor()) {
@@ -108,9 +175,11 @@ void Board::displayTrack(int player_index) {
 // displays the entire board for all players
 void Board::displayBoard() {
     for (int i = 0; i < _player_count; i++) {
-        std::cout << "player " << i + 1 << "'s path:\n";
+        //cout << "player " << i + 1 << "'s path:\n";
         displayTrack(i);
-        std::cout << std::endl;
+        if(i == _player_count - 1){
+            cout << endl;
+        }
     }
 }
 
@@ -153,3 +222,51 @@ int Board::getPlayerPosition(int player_index) const {
 Player Board::getPlayer(int player_index) {
     return players[player_index];
 }
+
+void Board::displayStats(int index){
+    players[index].printStats();
+}
+
+void Board::playerPride(int index){
+    cout<<"Player "<<index + 1<<"'s Pride Points: "<<players[index].getPride()<<endl;
+}
+
+//Imports
+void Board::importFiles(){
+    ifstream characters("chars.txt");
+    ifstream advisors("advisors.txt");
+    ifstream riddles("riddles.txt");
+    ifstream gameRules("game_rules.txt");
+    ifstream events("random_events.txt");
+    if(characters.fail() || advisors.fail() || riddles.fail() || gameRules.fail() || events.fail()){
+        cout<<"One or more files failed to open, quitting program."<<endl;
+        exit(0);
+    }else{
+    string input;
+    while(!characters.eof()){
+        getline(characters, input);
+        _characterVec.push_back(input);
+    }
+    while(!advisors.eof()){
+        getline(advisors, input);
+        _advisorVec.push_back(input);
+    }
+    while(!riddles.eof()){
+        getline(riddles, input);
+        _riddleVec.push_back(input);
+    }
+    while(!gameRules.eof()){
+        getline(gameRules, input);
+        _ruleVec.push_back(input);
+    }
+    while(!events.eof()){
+        getline(events, input);
+        _eventsVec.push_back(input);
+    }
+    characters.close();
+    advisors.close();
+    riddles.close();
+    gameRules.close();
+    events.close();
+    }
+    }

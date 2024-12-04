@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -34,6 +35,9 @@ class Player{
         int getAge();
         //get path
         char getPath();
+        //get advisor
+        string getAdvisor();
+        
 
         //Setters
 
@@ -62,9 +66,9 @@ class Player{
         //set age
         void setAge(int);
         //set path
-        void setPath(string);
+        void setPath(char);
         //set advisor
-        void setAdvisor(int);
+        void setAdvisor(vector<string> advisors, int);
 
         //Others
 
@@ -74,6 +78,8 @@ class Player{
         void toPrideLands();
         //print stats
         void printStats();
+        //show advisors
+        void printAdvisors(vector<string>);
 
 };
 
