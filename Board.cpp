@@ -36,12 +36,11 @@ Board::Board(int player_count) {
     for(int i = 0; i < _player_count; i++){
         cout<<"Player "<<i + 1<<", please select your path. Pride Lands (P) or Cub Training (T)."<<endl;
         cin>>path_type;
-        int removeIndex;
         int choice;
         bool valid = false;
         players[i].setPath(path_type);
         if(players[i].getPath() == 'T'){
-            cout<<"Player "<<i + 1<<"please select your advisor."<<endl;
+            cout<<"Player "<<i + 1<<", please select your advisor."<<endl;
             players[i].printAdvisors(_advisorVec);
             cin>>choice;
             while(!valid){
@@ -51,10 +50,9 @@ Board::Board(int player_count) {
                     cout<<"Invalid. Pick again."<<endl;
                     cin>>choice;
                 }
-            players[i].setAdvisor(_advisorVec, choice);
-            removeIndex = choice - 1;
-            _advisorVec.erase(_advisorVec.begin() + removeIndex);
             }
+            players[i].setAdvisor(_advisorVec, choice);
+            _advisorVec.erase(_advisorVec.begin() + choice - 1);
 
         }
     }
