@@ -43,7 +43,7 @@ public:
     void displayBoard();                  // shows the entire board, including both paths for all players
 
     // Player and tile interaction
-    bool movePlayer(int player_index);    // moves a player forward and triggers the effect of the tile they land on
+    bool movePlayer(int player_index, int spinner);    // moves a player forward and triggers the effect of the tile they land on
     int getPlayerPosition(int player_index) const; // gets a player's current position
     Player getPlayer(int player_index);  // returns a copy of a player object
 

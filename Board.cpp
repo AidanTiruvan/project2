@@ -186,26 +186,44 @@ void Board::displayBoard() {
 }
 
 // moves a player forward and applies tile effects
-bool Board::movePlayer(int player_index) {
-    _player_positions[player_index]++;
+bool Board::movePlayer(int player_index, int spinner) {
+    // calculates the final position of the player after the spin
+    int newPosition = _player_positions[player_index] + spinner;
 
-    // check if the player reached the final tile
-    if (_player_positions[player_index] >= _BOARD_SIZE) {
-        _player_positions[player_index] = _BOARD_SIZE - 1;
-        return true; // player reached pride rock
+    // this is so that the player still shouldn't go farther than the board size
+    if (newPosition >= _BOARD_SIZE) {
+        _player_positions[player_index] = _BOARD_SIZE - 1; // if they do exceed the board size it just puts them on the final tile
+        std::cout << "Player " << player_index + 1 << " reached Pride Rock!" << std::endl;
+
+        // pride rock event trigger 
+        Tile finalTile = _tiles[player_index][_player_positions[player_index]];
+        auto [prideChange, staminaChange, strengthChange, wisdomChange] = finalTile.event();
+
+        // update the player stats 
+        players[player_index].setPride(players[player_index].getPride() + prideChange);
+        players[player_index].addStamina(staminaChange);
+        players[player_index].addStrength(strengthChange);
+        players[player_index].addWisdom(wisdomChange);
+
+        return true; //game finishes 
     }
 
-    // apply effects from the tile the player lands on
-    Tile currentTile = _tiles[player_index][_player_positions[player_index]];
+    // update players position to the new position
+    _player_positions[player_index] = newPosition;
+
+    // trigger the regular event for the tile the player landed on
+    Tile currentTile = _tiles[player_index][newPosition];
     auto [prideChange, staminaChange, strengthChange, wisdomChange] = currentTile.event();
 
+    // update regular turn player stats
     players[player_index].setPride(players[player_index].getPride() + prideChange);
     players[player_index].addStamina(staminaChange);
     players[player_index].addStrength(strengthChange);
     players[player_index].addWisdom(wisdomChange);
 
-    return false;
+    return false; // the game continues on
 }
+
 
 // checks if a player is on a specific tile
 bool Board::isPlayerOnTile(int player_index, int pos) {

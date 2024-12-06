@@ -52,32 +52,19 @@ int main()
                 cout<<"(6) End Game Early (No one will win!)"<<endl;
                 cin>>menuChoice;
                 switch(menuChoice){
-                    case 1:
+                    case 1:{
                         spinner = rand() % 6 + 1;
                         cout << "Spinner result: " << spinner << endl;
-                        for (int move = 0; move < spinner; move++){
-                            // this is important since on every turn it moves the player and therefore applies the tile effect 
-                            //(only works for the first 2 players as of now)
-                            bool reachedEnd = board.movePlayer(i);
-
-                            // checks if any player reached the pride rock, somehow this works for the 3rd player and
-                            // because the board is messed up, tile events dont really work on any other players other than the first two
+                            bool reachedEnd = board.movePlayer(i, spinner);//pass the spinner here to make it only do the event for the final tile
                             if (reachedEnd){
                                 cout << "Player " << i + 1 << " has reached the pride rock" << std::endl;
                                 game_over = true;
-                                break;
                             }
                         }
                         turn_over = true;
-
-                        // this basically displays the updated board after each turn, this works well 
                         board.displayBoard();
-
-                        //if (game_over){
-                            //break;
-                        //}
                         break;
-                        
+                    
                     case 2:
                         while(!subExit){
                             cout<<"(1) Show Lane"<<endl;
