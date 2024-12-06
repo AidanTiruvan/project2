@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "split.h"
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
@@ -25,81 +26,68 @@ Board::Board() {
 // constructor for custom number of players
 Board::Board(int player_count) {
     importFiles();
-    if(player_count > _MAX_PLAYERS){
+    if (player_count > _MAX_PLAYERS) {
         _player_count = _MAX_PLAYERS;
-    }else{
+    } else {
         _player_count = player_count;
     }
 
-//Give each player in the Player array a path type, should be error handled by setPath
-    char path_type;
-    for(int i = 0; i < _player_count; i++){
-        cout<<"Player "<<i + 1<<", select your character."<<endl;
-        
-        
-        //Code for selecting character
-        //BROKE AHH CODE RN
-        //MAKE ARRAY(S) OF ALL THE CHARACTERS DIFFERENT STATS SO SETTING THE PLAYERS INITIAL STATS IS EASIER
-        string name;
-        string age; //use stoi for all the following later in the code
-        string strength;
-        string stamina;
-        string wisdom;
-        string pridePoints;
-        int splitCount = 0;
-        int splitIndex = 0;
-        for(int j = 0; j < _characterVec.size(); j++){
-            for(int k = 0; k < _characterVec[j].length(); k++){
-                if(_characterVec[j][k] == '|'){
-                    splitCount++;
-                }
-                if(_characterVec[j][k] == '|' && splitCount == 0){
-                    splitIndex = k;
-                    name = _characterVec[j].substr(0, splitIndex);
-                }else if(_characterVec[j][k] == '|' && splitCount == 1){
-                    age = _characterVec[j].substr(splitIndex + 1, k);
-                    splitIndex = k;
-                }else if(_characterVec[j][k] == '|' && splitCount == 2){
-                    strength = _characterVec[j].substr(splitIndex + 1, k);
-                    splitIndex = k;
-                }else if(_characterVec[j][k] == '|' && splitCount == 3){
-                    stamina = _characterVec[j].substr(splitIndex + 1, k);
-                    splitIndex = k;
-                }else if(_characterVec[j][k] == '|' && splitCount == 4){
-                    wisdom = _characterVec[j].substr(splitIndex + 1, k);
-                    splitIndex = k;
-                }else if(k == _characterVec[j].length() - 1){
-                    pridePoints = _characterVec[j].substr(splitIndex + 1, k);
-                    splitIndex = k;
-                }else if(splitCount != 5){
-                    _characterVec[j].erase();
-                    j = j - 1;
-                    name = "";
-                }
-            }
-            if(name != ""){
-                cout<<"("<<j + 1<<") "<<name<<", Age: "<<age<<", Strength: "<<strength<<", Stamina: "<<stamina<<", Wisdom: "<<wisdom<<", Pride Points: "<<pridePoints<<endl;
+    // give each player in the Player array a path type, should be error handled by setpath
+    for (int i = 0; i < _player_count; i++) {
+        std::cout << "Player " << i + 1 << ", select your character." << std::endl;
+
+        // character options 
+        for (size_t j = 0; j < _characterVec.size(); j++) { // bro use size_t for unsigned shie
+            std::string arr[6];
+            int arrSize = 6;
+            if (split(_characterVec[j], '|', arr, arrSize) != -1) {
+                //formatted output of character options
+                std::cout << "(" << j + 1 << ") " << arr[0]
+                          << ", Age: " << arr[1]
+                          << ", Strength: " << arr[2]
+                          << ", Stamina: " << arr[3]
+                          << ", Wisdom: " << arr[4]
+                          << ", Pride Points: " << arr[5] << std::endl;
             }
         }
-        cout<<"Player "<<i + 1<<", please select your path. Pride Lands (P) or Cub Training (T)."<<endl;
-        cin>>path_type;
+
+        // select the chharacter
         int choice;
-        bool valid = false;
+        std::cin >> choice;
+        while (choice < 1 || static_cast<size_t>(choice) > _characterVec.size()) { // cast to size_t for comparison
+            std::cout << "Invalid. Pick again." << std::endl;
+            std::cin >> choice;
+        }
+
+        std::string arr[6];
+        int arrSize = 6;
+        split(_characterVec[choice - 1], '|', arr, arrSize);
+        //parse and initialize the player object from the selected character
+        players[i] = Player(arr[0], std::stoi(arr[2]), std::stoi(arr[3]), std::stoi(arr[4]), std::stoi(arr[1]));
+
+        // select path
+        char path_type;
+        std::cout << "Player " << i + 1 << ", please select your path. Pride Lands (P) or Cub Training (T)." << std::endl;
+        std::cin >> path_type;
         players[i].setPath(path_type);
-        if(players[i].getPath() == 'T'){
-            cout<<"Player "<<i + 1<<", please select your advisor."<<endl;
+
+        // if the player chooses the cub training they should select advisor
+        if (players[i].getPath() == 'T') {
+            std::cout << "Player " << i + 1 << ", please select your advisor." << std::endl;
             players[i].printAdvisors(_advisorVec);
-            cin>>choice;
-            while(!valid){
-                if(choice > 0 && choice < _advisorVec.size() + 1){
+            int advisorChoice;
+            std::cin >> advisorChoice;
+            bool valid = false;
+            while (!valid) {
+                if (advisorChoice > 0 && static_cast<size_t>(advisorChoice) <= _advisorVec.size()) { // cast to size_t
                     valid = true;
-                }else{
-                    cout<<"Invalid. Pick again."<<endl;
-                    cin>>choice;
+                } else {
+                    std::cout << "Invalid. Pick again." << std::endl;
+                    std::cin >> advisorChoice;
                 }
             }
-            players[i].setAdvisor(_advisorVec, choice);
-            _advisorVec.erase(_advisorVec.begin() + choice - 1);
+            players[i].setAdvisor(_advisorVec, advisorChoice);
+            _advisorVec.erase(_advisorVec.begin() + advisorChoice - 1); // remove the advisor boi properly
         }
     }
 
@@ -120,76 +108,45 @@ void Board::initializeBoard() {
 }
 
 // initializes tiles for a specific path
-//COULD ALSO ADD DIFFERENT CHANCES AT DIFFERENT PARTS OF THE BOARD
+// COULD ALSO ADD DIFFERENT CHANCES AT DIFFERENT PARTS OF THE BOARD
 void Board::initializeTiles(char pathType, int j) {
     int green_count = 0;
     Tile tile;
-    //if player picks pridelands this happens
-    if(pathType == 'P'){
-        for (int i = 0; i < _BOARD_SIZE; i++) {
-            //Track of green tile positions to ensure we place exactly 30 greens
-            if (i == _BOARD_SIZE - 1) {
+
+    for (int i = 0; i < _BOARD_SIZE; i++) {
+        if (i == _BOARD_SIZE - 1) {
             // Set the last tile as Orange for "Pride Rock"
-                tile.setColor('O');
-            } else if (i == 0) {
-            // Set the last tile as Orange for "Pride Rock"
-                tile.setColor('Y');
-            } else if (green_count < 30 && (rand() % (_BOARD_SIZE - i) <= 30 - green_count)) {
-                tile.setColor('G');
-                green_count++;
+            tile.setColor('O');
+        } else if (i == 0) {
+            // Set the first tile as Grey for "Starting Point"
+            tile.setColor('Y');
+        } else if (green_count < 30 && (rand() % (_BOARD_SIZE - i) <= 30 - green_count)) {
+            tile.setColor('G');
+            green_count++;
+        } else {
+            // Assign other tile colors based on path type
+            int color_choice = rand() % 100;
+            if (pathType == 'P') {
+                if (color_choice < 30) tile.setColor('P');
+                else if (color_choice < 45) tile.setColor('B');
+                else if (color_choice < 60) tile.setColor('R');
+                else if (color_choice < 80) tile.setColor('N');
+                else tile.setColor('U');
             } else {
-            // Randomly assign one of the other colors: Blue, Pink, Brown, Red,Purple
-                int color_choice = rand() % 100;
-                if(color_choice < 30){
-                    tile.setColor('P'); //30 Percent chance for advisor tile
-                }else if(color_choice < 45){
-                    tile.setColor('B'); //15 percent chance for oasis tile
-                }else if(color_choice < 60){
-                    tile.setColor('R'); //15 percent chance for graveyard tile
-                }else if(color_choice < 80){
-                    tile.setColor('N'); //20 percent chance for hyena tile
-                }else{
-                    tile.setColor('U'); //20 percent chance for riddle tile
-                }
+                if (color_choice < 10) tile.setColor('P');
+                else if (color_choice < 25) tile.setColor('B');
+                else if (color_choice < 55) tile.setColor('R');
+                else if (color_choice < 80) tile.setColor('N');
+                else tile.setColor('U');
             }
-            _tiles[j][i] = tile;
         }
-    }else{ //If player picks cub training this happens
-            //  WILL WANT TO MAKE IT SO ADVISORS GIVE MORE BONUS ON GREEN STUFF AND OASIS TO NEGATE HOW MUCH MORE BAD STUFF
-        for (int i = 0; i < _BOARD_SIZE; i++) {
-            //Track of green tile positions to ensure we place exactly 30 greens
-            if (i == _BOARD_SIZE - 1) {
-            // Set the last tile as Orange for "Pride Rock"
-                tile.setColor('O');
-            } else if (i == 0) {
-            // Set the last tile as Orange for "Pride Rock"
-                tile.setColor('Y');
-            } else if (green_count < 30 && (rand() % (_BOARD_SIZE - i) <= 30 - green_count)) {
-                tile.setColor('G');
-                green_count++;
-            } else {
-            // Randomly assign one of the other colors: Blue, Pink, Brown, Red,Purple
-                int color_choice = rand() % 100;
-                if(color_choice < 10){
-                    tile.setColor('P'); //10 Percent chance for advisor tile
-                }else if(color_choice < 25){
-                    tile.setColor('B'); //15 percent chance for oasis tile
-                }else if(color_choice < 55){
-                    tile.setColor('R'); //30 percent chance for graveyard tile
-                }else if(color_choice < 80){
-                    tile.setColor('N'); //25 percent chance for hyena tile
-                }else{
-                    tile.setColor('U'); //20 percent chance for riddle tile
-                }
-            }
-            _tiles[j][i] = tile;
-        }
+        _tiles[j][i] = tile;
     }
 }
 
 // displays a single tile with color and player presence
 void Board::displayTile(int player_index, int pos) {
-    string color = "";
+    std::string color = "";
     bool playerOnTile = isPlayerOnTile(player_index, pos);
 
     switch (_tiles[player_index][pos].getColor()) {
@@ -221,10 +178,9 @@ void Board::displayTrack(int player_index) {
 // displays the entire board for all players
 void Board::displayBoard() {
     for (int i = 0; i < _player_count; i++) {
-        //cout << "player " << i + 1 << "'s path:\n";
         displayTrack(i);
-        if(i == _player_count - 1){
-            cout << endl;
+        if (i == _player_count - 1) {
+            std::cout << std::endl;
         }
     }
 }
@@ -269,59 +225,58 @@ Player Board::getPlayer(int player_index) {
     return players[player_index];
 }
 
-void Board::displayStats(int index){
+void Board::displayStats(int index) {
     players[index].printStats();
 }
 
-void Board::playerPride(int index){
-    cout<<"Player "<<index + 1<<"'s Pride Points: "<<players[index].getPride()<<endl;
+void Board::playerPride(int index) {
+    std::cout << "Player " << index + 1 << "'s Pride Points: " << players[index].getPride() << std::endl;
 }
 
-//Imports
-void Board::importFiles(){
-    ifstream characters("chars.txt");
-    ifstream advisors("advisors.txt");
-    ifstream riddles("riddles.txt");
-    ifstream gameRules("game_rules.txt");
-    ifstream events("random_events.txt");
-    if(characters.fail() || advisors.fail() || riddles.fail() || gameRules.fail() || events.fail()){
-        cout<<"One or more files failed to open, quitting program."<<endl;
+// Imports
+void Board::importFiles() {
+    std::ifstream characters("chars.txt");
+    std::ifstream advisors("advisors.txt");
+    std::ifstream riddles("riddles.txt");
+    std::ifstream gameRules("game_rules.txt");
+    std::ifstream events("random_events.txt");
+    if (characters.fail() || advisors.fail() || riddles.fail() || gameRules.fail() || events.fail()) {
+        std::cout << "One or more files failed to open, quitting program." << std::endl;
         exit(0);
-    }else{
-    string input;
-    string worthless; //Will be used to get rid of line we dont want players to see
-    getline(characters, worthless);
-    while(!characters.eof()){
-        getline(characters, input);
-        _characterVec.push_back(input);
-    }
-    while(!advisors.eof()){
-        getline(advisors, input);
-        _advisorVec.push_back(input);
-    }
-    getline(riddles, worthless);
-    while(!riddles.eof()){
-        getline(riddles, input);
-        _riddleVec.push_back(input);
-    }
-    while(!gameRules.eof()){
-        getline(gameRules, input);
-        _ruleVec.push_back(input);
-    }
-    getline(events, worthless);
-    while(!events.eof()){
-        getline(events, input);
-        _eventsVec.push_back(input);
-    }
-    //removes #._ from beginning of advisorVec
-    for(int j = 0; j < _advisorVec.size(); j++){
-            _advisorVec[j].erase(0,3);
+    } else {
+        std::string input;
+        std::string worthless; // Will be used to get rid of lines we don't want players to see
+        getline(characters, worthless);
+        while (!characters.eof()) {
+            getline(characters, input);
+            _characterVec.push_back(input);
+        }
+        while (!advisors.eof()) {
+            getline(advisors, input);
+            _advisorVec.push_back(input);
+        }
+        getline(riddles, worthless);
+        while (!riddles.eof()) {
+            getline(riddles, input);
+            _riddleVec.push_back(input);
+        }
+        while (!gameRules.eof()) {
+            getline(gameRules, input);
+            _ruleVec.push_back(input);
+        }
+        while (!events.eof()) {
+            getline(events, input);
+            _eventsVec.push_back(input);
+        }
+        // removes #._ from beginning of advisorVec
+        for (int j = 0; j < _advisorVec.size(); j++) {
+            _advisorVec[j].erase(0, 3);
         }
 
-    characters.close();
-    advisors.close();
-    riddles.close();
-    gameRules.close();
-    events.close();
+        characters.close();
+        advisors.close();
+        riddles.close();
+        gameRules.close();
+        events.close();
     }
-    }
+}
