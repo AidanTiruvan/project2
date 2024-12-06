@@ -63,6 +63,8 @@ class Player{
         void subWisdom(int);
         //set pride points
         void setPride(int);
+        //change pride points
+        void addPride(int);
         //set age
         void setAge(int);
         //set path

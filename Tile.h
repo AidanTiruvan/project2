@@ -19,7 +19,15 @@ public:
     // setters for updating player color
     void setColor(char newColor);
 
-    std::tuple<int, int, int, int> event() const;
+    int grassLand(); //Will determine if a randomEvent happens and will change pridePoints
+    tuple<int, int, int> oasisTile(); //Will add 200 to each stat
+    int advisorTile();//should return index of counselor, -1 if no change
+    tuple<int, int, int> graveYard(); //subtract 100 from each stat
+    int hyenaTile(); //should subtract 300 stamina
+    int riddleTile(); //if right, plus 500 wisdom
+    void prideRock(); 
+
+    tuple<int, int, int, int> event(string array[], string array2[]) const;
 };
 
 #endif

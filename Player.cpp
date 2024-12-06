@@ -149,6 +149,10 @@ void Player::setPride(int pridePoints){
     //Will want to include add and subtract for pride points
 }
 
+void Player::addPride(int prideChange){
+    _pride_points += prideChange;
+}
+
 void Player::setAge(int age){
     if(age >= 1 && age <= 20){
         _age = age;

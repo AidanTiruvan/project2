@@ -68,7 +68,7 @@ Board::Board(int player_count) {
 
         // select path
         int path_type;
-        cout << "Player " << i + 1 << ", please select your path.Pride Lands (P) or Cub Training (T)." << endl;
+        cout << "Player " << i + 1 << ", please select your path.Pride Lands or Cub Training." << endl;
         cout<<"1: Pride Lands"<<endl;
         cout<<"2: Cub Training"<<endl;
         cin >> path_type;
@@ -200,17 +200,17 @@ bool Board::movePlayer(int player_index, int spinner) {
     // this is so that the player still shouldn't go farther than the board size
     if (newPosition >= _BOARD_SIZE) {
         _player_positions[player_index] = _BOARD_SIZE - 1; // if they do exceed the board size it just puts them on the final tile
-        std::cout << "Player " << player_index + 1 << " reached Pride Rock!" << std::endl;
 
         // pride rock event trigger 
         Tile finalTile = _tiles[player_index][_player_positions[player_index]];
-        auto [prideChange, staminaChange, strengthChange, wisdomChange] = finalTile.event();
+        //auto [prideChange, staminaChange, strengthChange, wisdomChange] = finalTile.event();
+        finalTile.prideRock();
 
         // update the player stats 
-        players[player_index].setPride(players[player_index].getPride() + prideChange);
-        players[player_index].addStamina(staminaChange);
-        players[player_index].addStrength(strengthChange);
-        players[player_index].addWisdom(wisdomChange);
+        //players[player_index].setPride(players[player_index].getPride() + prideChange);
+        //players[player_index].addStamina(staminaChange);
+        //players[player_index].addStrength(strengthChange);
+        //players[player_index].addWisdom(wisdomChange);
 
         return true; //game finishes 
     }
@@ -220,14 +220,57 @@ bool Board::movePlayer(int player_index, int spinner) {
 
     // trigger the regular event for the tile the player landed on
     Tile currentTile = _tiles[player_index][newPosition];
-    auto [prideChange, staminaChange, strengthChange, wisdomChange] = currentTile.event();//Should put in advisor and event vectors as parameters, and should
+    int choice;
+    bool valid = false;
+    if(currentTile.getColor() == 'G'){
+        currentTile.grassLand();
+        players[player_index].addPride(currentTile.grassLand());
+    }else if(currentTile.getColor() == 'B'){
+        auto [strengthChange, staminaChange, wisdomChange] = currentTile.oasisTile();
+        players[player_index].addStrength(strengthChange);
+        players[player_index].addStamina(staminaChange);
+        players[player_index].addWisdom(wisdomChange);
+    }else if(currentTile.getColor() == 'P'){
+        if(players[player_index].getAdvisor() != ""){
+            while(!valid){
+                cout<<"Would you like to switch your advisor? 1 = Yes, 2 = No"<<endl;
+                cin>>choice;
+                if(choice == 1){
+                    //display and let choose advisor, all the boring shi
+                    valid = true;
+                }else if(choice == 2){
+                    cout<<"Your advisor thanks you for staying with them."<<endl;
+                    valid = true;
+                }else{
+                    cout<<"Invalid Choice."<<endl;
+                }
+            }
+        }else{
+            //present list and let them pick advisor since they dont have one
+        }
+    }else if(currentTile.getColor() == 'R'){
+        auto [strengthChange, staminaChange, wisdomChange] = currentTile.graveYard();
+        players[player_index].addStrength(strengthChange);
+        players[player_index].addStamina(staminaChange);
+        players[player_index].addWisdom(wisdomChange);
+        //Move player index back 10.
+    }else if(currentTile.getColor() == 'N'){
+        players[player_index].addStamina(currentTile.hyenaTile());
+        //Move to previous index
+    }else if(currentTile.getColor() == 'U'){
+        currentTile.riddleTile();
+    }else{
+        currentTile.prideRock();
+    }
+    
+    //auto [prideChange, staminaChange, strengthChange, wisdomChange] = currentTile.event();//Should put in advisor and event vectors as parameters, and should
     //put in player[i]'s advisor name for event boosts and shit
 
     // update regular turn player stats
-    players[player_index].setPride(players[player_index].getPride() + prideChange);
-    players[player_index].addStamina(staminaChange);
-    players[player_index].addStrength(strengthChange);
-    players[player_index].addWisdom(wisdomChange);
+    //players[player_index].setPride(players[player_index].getPride() + prideChange);
+    //players[player_index].addStamina(staminaChange);
+    //players[player_index].addStrength(strengthChange);
+    //players[player_index].addWisdom(wisdomChange);
 
     return false; // the game continues on
 }
