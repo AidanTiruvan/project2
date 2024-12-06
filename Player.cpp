@@ -181,7 +181,7 @@ void Player::setAdvisor(vector<string> advisors, int choice){ //COULD RETURN AN 
 void Player::printAdvisors(vector<string> advisors){
     cout<<"Pick your advisor: "<<endl;
     for(int i = 0; i < advisors.size(); i++){
-        cout<<advisors[i]<<endl;
+        cout<<i+1<<". "<<advisors[i]<<endl;
     }
 }
 void Player::trainCub(int strength, int stamina, int wisdom){

@@ -6,7 +6,7 @@
 
 class Tile {
 private:
-    char color; // represents the color of the tile the player is on in a char for simplicity
+    char _color; // represents the color of the tile the player is on in a char for simplicity
 
 public:
     // constructors for tile.cpp

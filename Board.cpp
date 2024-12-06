@@ -34,6 +34,53 @@ Board::Board(int player_count) {
 //Give each player in the Player array a path type, should be error handled by setPath
     char path_type;
     for(int i = 0; i < _player_count; i++){
+        cout<<"Player "<<i + 1<<", select your character."<<endl;
+        
+        
+        //Code for selecting character
+        //BROKE AHH CODE RN
+        //MAKE ARRAY(S) OF ALL THE CHARACTERS DIFFERENT STATS SO SETTING THE PLAYERS INITIAL STATS IS EASIER
+        string name;
+        string age; //use stoi for all the following later in the code
+        string strength;
+        string stamina;
+        string wisdom;
+        string pridePoints;
+        int splitCount = 0;
+        int splitIndex = 0;
+        for(int j = 0; j < _characterVec.size(); j++){
+            for(int k = 0; k < _characterVec[j].length(); k++){
+                if(_characterVec[j][k] == '|'){
+                    splitCount++;
+                }
+                if(_characterVec[j][k] == '|' && splitCount == 0){
+                    splitIndex = k;
+                    name = _characterVec[j].substr(0, splitIndex);
+                }else if(_characterVec[j][k] == '|' && splitCount == 1){
+                    age = _characterVec[j].substr(splitIndex + 1, k);
+                    splitIndex = k;
+                }else if(_characterVec[j][k] == '|' && splitCount == 2){
+                    strength = _characterVec[j].substr(splitIndex + 1, k);
+                    splitIndex = k;
+                }else if(_characterVec[j][k] == '|' && splitCount == 3){
+                    stamina = _characterVec[j].substr(splitIndex + 1, k);
+                    splitIndex = k;
+                }else if(_characterVec[j][k] == '|' && splitCount == 4){
+                    wisdom = _characterVec[j].substr(splitIndex + 1, k);
+                    splitIndex = k;
+                }else if(k == _characterVec[j].length() - 1){
+                    pridePoints = _characterVec[j].substr(splitIndex + 1, k);
+                    splitIndex = k;
+                }else if(splitCount != 5){
+                    _characterVec[j].erase();
+                    j = j - 1;
+                    name = "";
+                }
+            }
+            if(name != ""){
+                cout<<"("<<j + 1<<") "<<name<<", Age: "<<age<<", Strength: "<<strength<<", Stamina: "<<stamina<<", Wisdom: "<<wisdom<<", Pride Points: "<<pridePoints<<endl;
+            }
+        }
         cout<<"Player "<<i + 1<<", please select your path. Pride Lands (P) or Cub Training (T)."<<endl;
         cin>>path_type;
         int choice;
@@ -53,7 +100,6 @@ Board::Board(int player_count) {
             }
             players[i].setAdvisor(_advisorVec, choice);
             _advisorVec.erase(_advisorVec.begin() + choice - 1);
-
         }
     }
 
@@ -243,6 +289,8 @@ void Board::importFiles(){
         exit(0);
     }else{
     string input;
+    string worthless; //Will be used to get rid of line we dont want players to see
+    getline(characters, worthless);
     while(!characters.eof()){
         getline(characters, input);
         _characterVec.push_back(input);
@@ -251,6 +299,7 @@ void Board::importFiles(){
         getline(advisors, input);
         _advisorVec.push_back(input);
     }
+    getline(riddles, worthless);
     while(!riddles.eof()){
         getline(riddles, input);
         _riddleVec.push_back(input);
@@ -259,10 +308,16 @@ void Board::importFiles(){
         getline(gameRules, input);
         _ruleVec.push_back(input);
     }
+    getline(events, worthless);
     while(!events.eof()){
         getline(events, input);
         _eventsVec.push_back(input);
     }
+    //removes #._ from beginning of advisorVec
+    for(int j = 0; j < _advisorVec.size(); j++){
+            _advisorVec[j].erase(0,3);
+        }
+
     characters.close();
     advisors.close();
     riddles.close();
