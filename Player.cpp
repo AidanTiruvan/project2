@@ -157,17 +157,11 @@ void Player::setAge(int age){
     }
 }
 
-void Player::setPath(char choice) {
-    while (true) {
-        if (choice == 'P') {
+void Player::setPath(int choice) {
+        if (choice == 1) {
             _path = 'P';
-            break;
-        } else if (choice == 'T') {
+        } else if (choice == 2) {
             _path = 'T';
-            break;
-        }
-        cout << "Invalid Choice. Please enter again: ";
-        cin>>choice;
     }
 }
 
@@ -250,4 +244,11 @@ void Player::printStats(){
     }
     cout<<"|-|"<<endl;
     cout<<"-------------------------------"<<endl;
+}
+
+void Player::convertStats(int stat){
+    while(stat > 99){
+        stat = stat - 100;
+        _pride_points = _pride_points + 1000;
+    }
 }

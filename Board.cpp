@@ -64,26 +64,33 @@ Board::Board(int player_count) {
         split(_characterVec[choice - 1], '|', arr, arrSize);
         //parse and initialize the player object from the selected character
         players[i] = Player(arr[0], std::stoi(arr[2]), std::stoi(arr[3]), std::stoi(arr[4]), std::stoi(arr[1]));
+        _characterVec.erase(_characterVec.begin() + choice - 1);
 
         // select path
-        char path_type;
-        std::cout << "Player " << i + 1 << ", please select your path. Pride Lands (P) or Cub Training (T)." << std::endl;
-        std::cin >> path_type;
-        players[i].setPath(path_type);
+        int path_type;
+        cout << "Player " << i + 1 << ", please select your path.Pride Lands (P) or Cub Training (T)." << endl;
+        cout<<"1: Pride Lands"<<endl;
+        cout<<"2: Cub Training"<<endl;
+        cin >> path_type;
+        while(path_type != 1 && path_type != 2){
+            cout<<"Invalid choice."<<endl;
+            cin >> path_type;
+        }
+        players[i].setPath(path_type); //THIS IS CURRENTLY INFINTELY LOOPING IF THERES AN ERROR
 
         // if the player chooses the cub training they should select advisor
         if (players[i].getPath() == 'T') {
-            std::cout << "Player " << i + 1 << ", please select your advisor." << std::endl;
+            cout << "Player " << i + 1 << ", please select your advisor." << endl;
             players[i].printAdvisors(_advisorVec);
             int advisorChoice;
-            std::cin >> advisorChoice;
+            cin >> advisorChoice;
             bool valid = false;
             while (!valid) {
                 if (advisorChoice > 0 && static_cast<size_t>(advisorChoice) <= _advisorVec.size()) { // cast to size_t
                     valid = true;
                 } else {
-                    std::cout << "Invalid. Pick again." << std::endl;
-                    std::cin >> advisorChoice;
+                    cout << "Invalid. Pick again." << endl;
+                    cin >> advisorChoice;
                 }
             }
             players[i].setAdvisor(_advisorVec, advisorChoice);
@@ -189,7 +196,7 @@ void Board::displayBoard() {
 bool Board::movePlayer(int player_index, int spinner) {
     // calculates the final position of the player after the spin
     int newPosition = _player_positions[player_index] + spinner;
-
+    //IF NEW POSITION < 0, POSITION = 0 this is for graveyards and such
     // this is so that the player still shouldn't go farther than the board size
     if (newPosition >= _BOARD_SIZE) {
         _player_positions[player_index] = _BOARD_SIZE - 1; // if they do exceed the board size it just puts them on the final tile
@@ -213,7 +220,8 @@ bool Board::movePlayer(int player_index, int spinner) {
 
     // trigger the regular event for the tile the player landed on
     Tile currentTile = _tiles[player_index][newPosition];
-    auto [prideChange, staminaChange, strengthChange, wisdomChange] = currentTile.event();
+    auto [prideChange, staminaChange, strengthChange, wisdomChange] = currentTile.event();//Should put in advisor and event vectors as parameters, and should
+    //put in player[i]'s advisor name for event boosts and shit
 
     // update regular turn player stats
     players[player_index].setPride(players[player_index].getPride() + prideChange);
@@ -297,4 +305,9 @@ void Board::importFiles() {
         gameRules.close();
         events.close();
     }
+}
+
+const int Board::getBoardSize()
+{
+    return _BOARD_SIZE;
 }

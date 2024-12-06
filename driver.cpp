@@ -36,10 +36,14 @@ int main()
     int subMenuChoice;
     bool subExit = false;
     int spinner;
+    int overCount = 0;
     //Menu Code, not implemented yet
     while(!game_over){
         for(int i = 0; i <numPlayers; i++){
             turn_over = false;
+            if(board.getPlayerPosition(i) == board.getBoardSize() - 1){ //Should skip the players turn if they have finished
+                turn_over = true;
+            }
             while(!turn_over){
                 subExit = false; //When made true, will exit back out to main menu
                 cout<<endl;
@@ -50,6 +54,7 @@ int main()
                 cout<<"(4) Review Advisor"<<endl;
                 cout<<"(5) Review Game Rules"<<endl;
                 cout<<"(6) End Game Early (No one will win!)"<<endl;
+                cout<<endl;
                 cin>>menuChoice;
                 switch(menuChoice){
                     case 1:{
@@ -57,10 +62,12 @@ int main()
                         cout << "Spinner result: " << spinner << endl;
                             bool reachedEnd = board.movePlayer(i, spinner);//pass the spinner here to make it only do the event for the final tile
                             if (reachedEnd){
-                                cout << "Player " << i + 1 << " has reached the pride rock" << std::endl;
-                                game_over = true;
+                                cout << "Player " << i + 1 << " has reached Pride Rock." << endl;
+                                //game_over = true;
+                                overCount++;
                             }
                         }
+                        cout<<endl;
                         turn_over = true;
                         board.displayBoard();
                         break;
@@ -103,7 +110,11 @@ int main()
                         break;
                     case 4:
                         cout<<endl;
-                        cout<<board.getPlayer(i).getAdvisor()<<endl;
+                        if(board.getPlayer(i).getAdvisor() != ""){
+                            cout<<board.getPlayer(i).getAdvisor()<<endl;
+                        }else{
+                            cout<<"No advisor :("<<endl;
+                        }
                         break;
                     case 5:
                         //Will print rules from imported game rules txt file
@@ -119,6 +130,9 @@ int main()
                         break;
                 }
             }
+            if(overCount == numPlayers){ //stupid ass bug where it doesnt quit half the time
+            game_over = true;
+        }
         }
     }
     
@@ -166,11 +180,14 @@ int main()
 
 */
     // spits out the scores and whatnot for the users to see the final standings
-    std::cout << "\nNoice the game is over here are the scores:" << std::endl;
+    std::cout << "\nThe game is over! Here are the final scores:" << std::endl;
     for (int i = 0; i < numPlayers; i++)
     {
+        board.getPlayer(i).convertStats(board.getPlayer(i).getStrength());
+        board.getPlayer(i).convertStats(board.getPlayer(i).getStamina());
+        board.getPlayer(i).convertStats(board.getPlayer(i).getWisdom());
         int pridePoints = board.getPlayer(i).getPride();
-        std::cout << "player " << i + 1 << ": " << pridePoints << " Pride points" << std::endl;
+        std::cout << "Player " << i + 1 << ": " << pridePoints << " Pride points" << std::endl;
     }
 
     // this is supposed to determine the winner but it seems to not work when the values/scores are negative

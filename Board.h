@@ -51,6 +51,7 @@ public:
     void displayStats(int index);
     void playerPride(int index);
     void playerAdvisor(int index);
+    static const int getBoardSize();
 
     //Imports
     void importFiles();

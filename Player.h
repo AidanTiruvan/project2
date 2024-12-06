@@ -6,7 +6,7 @@ using namespace std;
 class Player{
     private:
         string _name;
-        string _advisor;
+        string _advisor = "";
         int _strength;
         int _stamina;
         int _wisdom;
@@ -66,7 +66,7 @@ class Player{
         //set age
         void setAge(int);
         //set path
-        void setPath(char);
+        void setPath(int);
         //set advisor
         void setAdvisor(vector<string> advisors, int);
 
@@ -80,6 +80,8 @@ class Player{
         void printStats();
         //show advisors
         void printAdvisors(vector<string>);
+        //Will convert every 100 of a stat into 1000 pride points
+        void convertStats(int);
 
 };
 

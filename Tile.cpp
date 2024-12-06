@@ -23,7 +23,7 @@ tuple<int, int, int, int> Tile::event() const {
 
     if (_color == 'G') { // green is the regular tile
         if (rand() % 2 == 0) { // we define this to have a 50% chance
-            cout << "Random event, you win 100 Pride Points\n"; //lets make this an actual random event from random_events.txt later
+            cout << "Aidan's spirit blesses you. You win 100 Pride Points!\n"; //lets make this an actual random event from random_events.txt later
             prideChange = 100;
         } else {
             cout << "Womp womp nothing happens on this tile\n";
