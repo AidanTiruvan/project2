@@ -63,7 +63,7 @@ int Player::getAge(){
     return _age;
 }
 
-char Player::getPath(){
+string Player::getPath(){
     return _path;
 }
 
@@ -161,11 +161,11 @@ void Player::setAge(int age){
     }
 }
 
-void Player::setPath(int choice) {
-        if (choice == 1) {
-            _path = 'P';
-        } else if (choice == 2) {
-            _path = 'T';
+void Player::setPath(string choice) {
+        if (choice == "1") {
+            _path = "P";
+        } else if (choice == "2") {
+            _path = "T";
     }
 }
 

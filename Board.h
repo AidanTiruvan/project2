@@ -1,10 +1,8 @@
-#ifndef BOARD_H
-#define BOARD_H
-
 #include "Tile.h"
 #include "Player.h"
 #include <fstream>
-
+#ifndef BOARD_H
+#define BOARD_H
 class Board
 {
 private:
@@ -21,7 +19,7 @@ private:
     bool isPlayerOnTile(int player_index, int pos); // checks if a player is standing on a specific tile (useful for board display logic)
 
     // Tile initialization
-    void initializeTiles(char pathType, int index);   // sets up the tiles for each path
+    void initializeTiles(string pathType, int index);   // sets up the tiles for each path
 
     //Imports
     vector<string> _characterVec;
@@ -55,6 +53,8 @@ public:
 
     //Imports
     void importFiles();
+    int checkValid(int start, int end, int choice);//including this since the stupid header file is being buggy
+    void printLines();//this too
 };
 
 #endif

@@ -12,7 +12,7 @@ class Player{
         int _wisdom;
         int _pride_points; //money equivalent
         int _age;
-        char _path; //Path = 'p' for pridelands, 't' for train cub
+        string _path; //Path = 'p' for pridelands, 't' for train cub
     public:
         //Default constructor, empty name, 100 for each value, pride 0, age 1
         Player();
@@ -34,7 +34,7 @@ class Player{
         //get age
         int getAge();
         //get path
-        char getPath();
+        string getPath();
         //get advisor
         string getAdvisor();
         
@@ -68,7 +68,7 @@ class Player{
         //set age
         void setAge(int);
         //set path
-        void setPath(int);
+        void setPath(string);
         //set advisor
         void setAdvisor(vector<string> advisors, int);
 

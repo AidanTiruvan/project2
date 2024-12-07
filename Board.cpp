@@ -52,12 +52,9 @@ Board::Board(int player_count) {
         }
 
         // select the chharacter
-        int choice;
-        std::cin >> choice;
-        while (choice < 1 || static_cast<size_t>(choice) > _characterVec.size()) { // cast to size_t for comparison
-            std::cout << "Invalid. Pick again." << std::endl;
-            std::cin >> choice;
-        }
+        int choice = 0;
+        choice = checkValid(1, static_cast<int> (_characterVec.size()), choice);
+        printLines();
 
         std::string arr[6];
         int arrSize = 6;
@@ -67,34 +64,27 @@ Board::Board(int player_count) {
         _characterVec.erase(_characterVec.begin() + choice - 1);
 
         // select path
-        int path_type;
-        cout << "Player " << i + 1 << ", please select your path.Pride Lands or Cub Training." << endl;
+        string path_type;
+        cout << "Player " << i + 1 << ", please select your path. Pride Lands or Cub Training." << endl;
         cout<<"1: Pride Lands"<<endl;
         cout<<"2: Cub Training"<<endl;
         cin >> path_type;
-        while(path_type != 1 && path_type != 2){
+        while(path_type != "1" && path_type != "2"){
             cout<<"Invalid choice."<<endl;
             cin >> path_type;
         }
-        players[i].setPath(path_type); //THIS IS CURRENTLY INFINTELY LOOPING IF THERES AN ERROR
+        players[i].setPath(path_type);
+        printLines();
 
         // if the player chooses the cub training they should select advisor
-        if (players[i].getPath() == 'T') {
-            cout << "Player " << i + 1 << ", please select your advisor." << endl;
+        if (players[i].getPath() == "T") {
+            cout << "Player " << i + 1 << " - ";
             players[i].printAdvisors(_advisorVec);
-            int advisorChoice;
-            cin >> advisorChoice;
-            bool valid = false;
-            while (!valid) {
-                if (advisorChoice > 0 && static_cast<size_t>(advisorChoice) <= _advisorVec.size()) { // cast to size_t
-                    valid = true;
-                } else {
-                    cout << "Invalid. Pick again." << endl;
-                    cin >> advisorChoice;
-                }
-            }
+            int advisorChoice = 0;
+            advisorChoice = checkValid(1, static_cast<int> (_advisorVec.size()), advisorChoice);
             players[i].setAdvisor(_advisorVec, advisorChoice);
             _advisorVec.erase(_advisorVec.begin() + advisorChoice - 1); // remove the advisor boi properly
+            printLines();
         }
     }
 
@@ -116,7 +106,7 @@ void Board::initializeBoard() {
 
 // initializes tiles for a specific path
 // COULD ALSO ADD DIFFERENT CHANCES AT DIFFERENT PARTS OF THE BOARD
-void Board::initializeTiles(char pathType, int j) {
+void Board::initializeTiles(string pathType, int j) {
     int green_count = 0;
     Tile tile;
 
@@ -133,7 +123,7 @@ void Board::initializeTiles(char pathType, int j) {
         } else {
             // Assign other tile colors based on path type
             int color_choice = rand() % 100;
-            if (pathType == 'P') {
+            if (pathType == "P") {
                 if (color_choice < 30) tile.setColor('P');
                 else if (color_choice < 45) tile.setColor('B');
                 else if (color_choice < 60) tile.setColor('R');
@@ -186,9 +176,6 @@ void Board::displayTrack(int player_index) {
 void Board::displayBoard() {
     for (int i = 0; i < _player_count; i++) {
         displayTrack(i);
-        if (i == _player_count - 1) {
-            std::cout << std::endl;
-        }
     }
 }
 
@@ -220,10 +207,8 @@ bool Board::movePlayer(int player_index, int spinner) {
 
     // trigger the regular event for the tile the player landed on
     Tile currentTile = _tiles[player_index][newPosition];
-    int choice;
-    bool valid = false;
+    int choice = 0;
     if(currentTile.getColor() == 'G'){
-        currentTile.grassLand();
         players[player_index].addPride(currentTile.grassLand());
     }else if(currentTile.getColor() == 'B'){
         auto [strengthChange, staminaChange, wisdomChange] = currentTile.oasisTile();
@@ -232,21 +217,21 @@ bool Board::movePlayer(int player_index, int spinner) {
         players[player_index].addWisdom(wisdomChange);
     }else if(currentTile.getColor() == 'P'){
         if(players[player_index].getAdvisor() != ""){
-            while(!valid){
-                cout<<"Would you like to switch your advisor? 1 = Yes, 2 = No"<<endl;
-                cin>>choice;
+            cout<<"Would you like to swtich your advisor? (1 = Yes | 2 = No)"<<endl;
+            choice = checkValid(1, 2, choice);
                 if(choice == 1){
-                    //display and let choose advisor, all the boring shi
-                    valid = true;
+                    players[player_index].printAdvisors(_advisorVec);
+                    //let pick advisor
                 }else if(choice == 2){
                     cout<<"Your advisor thanks you for staying with them."<<endl;
-                    valid = true;
-                }else{
-                    cout<<"Invalid Choice."<<endl;
                 }
-            }
         }else{
-            //present list and let them pick advisor since they dont have one
+            cout << "Player " << player_index + 1 << ", please select your advisor." << endl;
+            players[player_index].printAdvisors(_advisorVec);
+            int advisorChoice = 0;
+            advisorChoice = checkValid(1, static_cast<int> (_advisorVec.size()), advisorChoice);
+            players[player_index].setAdvisor(_advisorVec, advisorChoice);
+            _advisorVec.erase(_advisorVec.begin() + advisorChoice - 1);
         }
     }else if(currentTile.getColor() == 'R'){
         auto [strengthChange, staminaChange, wisdomChange] = currentTile.graveYard();
@@ -260,7 +245,7 @@ bool Board::movePlayer(int player_index, int spinner) {
     }else if(currentTile.getColor() == 'U'){
         currentTile.riddleTile();
     }else{
-        currentTile.prideRock();
+        //currentTile.prideRock();
     }
     
     //auto [prideChange, staminaChange, strengthChange, wisdomChange] = currentTile.event();//Should put in advisor and event vectors as parameters, and should
@@ -353,4 +338,23 @@ void Board::importFiles() {
 const int Board::getBoardSize()
 {
     return _BOARD_SIZE;
+}
+
+int Board::checkValid(int start, int end, int choice){
+    while (true) {
+        if (!(cin >> choice)){
+            cin.clear();
+            cin.ignore(100, '\n');
+            cout << "Invalid input."<<endl;;
+        }else if(choice < start || choice > end){
+            cout << "Invalid input."<<endl;
+        }else{
+            return choice;
+        }
+    }
+}
+
+void Board::printLines(){
+    cout<<"------------------------------------------------------------------------------------------------------------------------------------";
+    cout<<"------------------------"<<endl;
 }

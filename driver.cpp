@@ -5,39 +5,33 @@
 #include "Board.h"
 #include "Tile.h"
 #include "Player.h"
+#include "others.h"
 
 int main()
 {
     srand(time(0)); // random number generator to make sure that on the start of the game, the numbers are always different
 
-    int numPlayers;
-    do
-    {
-        cout << "Enter the number of players (2-4) ";
-        cin >> numPlayers;
-
-        if (numPlayers < 2 || numPlayers > 4)
-        {
-            cout << "Thats not 2-4 players try again " << endl;
-        }
-    } while (numPlayers < 2 || numPlayers > 4);
+    int numPlayers = 0;
+    printLines();
+    cout<<"Enter number of players. (2-4)"<<endl;
+    numPlayers = checkValid(2, 4, numPlayers);
+    printLines();
 
     // creates the board with the specified amount of players
     Board board(numPlayers);
 
     // displays the board for the first time in its starting state
-    cout << "\nInitial Board State:\n";
+    //cout << "\nInitial Board State:\n";
     board.displayBoard();
 
 
     bool game_over = false;
     bool turn_over = false;
-    int menuChoice;
-    int subMenuChoice;
+    int menuChoice = 0;
+    int subMenuChoice = 0;
     bool subExit = false;
     int spinner;
     int overCount = 0;
-    //Menu Code, not implemented yet
     while(!game_over){
         for(int i = 0; i <numPlayers; i++){
             turn_over = false;
@@ -46,7 +40,7 @@ int main()
             }
             while(!turn_over){
                 subExit = false; //When made true, will exit back out to main menu
-                cout<<endl;
+                printLines();
                 cout<<"Player "<<i + 1<<"'s Menu -- Please select an option."<<endl;
                 cout<<"(1) Spin"<<endl;
                 cout<<"(2) Check Player Progress"<<endl; //Will open a sub menu to display either their lane or check pride points
@@ -54,8 +48,8 @@ int main()
                 cout<<"(4) Review Advisor"<<endl;
                 cout<<"(5) Review Game Rules"<<endl;
                 cout<<"(6) End Game Early (No one will win!)"<<endl;
-                cout<<endl;
-                cin>>menuChoice;
+                menuChoice = checkValid(1, 6, menuChoice);
+                printLines();
                 switch(menuChoice){
                     case 1:{
                         spinner = rand() % 6 + 1;
@@ -67,8 +61,8 @@ int main()
                                 overCount++;
                             }
                         }
-                        cout<<endl;
                         turn_over = true;
+                        printLines();
                         board.displayBoard();
                         break;
                     
@@ -77,39 +71,28 @@ int main()
                             cout<<"(1) Show Lane"<<endl;
                             cout<<"(2) Check Pride Points"<<endl;
                             cout<<"(3) Back"<<endl;
-                            cin>>subMenuChoice;
+                            subMenuChoice = checkValid(1, 3, subMenuChoice);
+                            printLines();
                             switch(subMenuChoice){
                                 case 1:
                                     board.displayTrack(i);
-                                    cout<<endl;
                                     subExit = true;
                                     break;
                                 case 2:
-                                    cout<<"Pride Points: "<<board.getPlayer(i).getPride(); //Will need to remember player name input
+                                    cout<<"Pride Points: "<<board.getPlayer(i).getPride()<<endl; //Will need to remember player name input
                                     subExit = true;
                                     break;
                                 case 3:
                                     subExit= true;
                                     break;
-                                default:
-                                    cout<<"Invalid Choice - 1, 2, or 3."<<endl;
-                                    cin>>subMenuChoice;
-                                    break;
                             }
                         }
                         break;
                     case 3:
+                        //make a submenu that lets them visualize total pride points att the moment
                         board.displayStats(i);
-                        while(!subExit){
-                            cout<<"(1) Back"<<endl;
-                            cin>>subMenuChoice;
-                            if(subMenuChoice == 1){
-                                subExit = true;
-                            }
-                        }
                         break;
                     case 4:
-                        cout<<endl;
                         if(board.getPlayer(i).getAdvisor() != ""){
                             cout<<board.getPlayer(i).getAdvisor()<<endl;
                         }else{
@@ -120,7 +103,7 @@ int main()
                         //Will print rules from imported game rules txt file
                         break;
                     case 6:
-                        //Game end code will go here
+                        //Just for testing
                         turn_over = true;
                         game_over = true;
                         i = numPlayers;
