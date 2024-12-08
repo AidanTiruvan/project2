@@ -17,9 +17,10 @@ void Tile::setColor(char newColor) {
     _color = newColor;
 }
 
-int Tile::grassLand(){
+int Tile::grassLand(string events[], int advisorNum, int age){
     if(rand() % 2 == 0){
-        //Event, will change pride points
+        cout<<events[0]<<endl;
+        //WILL BE MADE PATH DEPENDENT
         return 100; //placeholder
     }else{
         cout<<"You landed on an ordinary piece of land."<<endl;
@@ -38,10 +39,6 @@ tuple<int, int, int> Tile::oasisTile(){
     return make_tuple(strength, stamina, wisdom);
 }
 
-int Tile::advisorTile(){
-    //return index of chosen advisor
-    return 0; //placeholder
-}
 
 tuple<int, int, int> Tile::graveYard(){
     int strength = -100;
@@ -60,10 +57,17 @@ int Tile::hyenaTile(){
     return -300;
 }
 
-int Tile::riddleTile(){
-    //riddle stuff here
-    return 500; //If right
-    //add if wrong, 0
+int Tile::riddleTile(string riddle[]){
+    cout<<riddle[0]<<endl;
+    string answer;
+    cin>>answer;
+    if(answer == riddle[1]){
+        cout<<"You're such a smarty pants. The Pride Lands bestows upon you 500 wisdom points."<<endl;
+        return 500; //If right
+    }else{
+        cout<<"You answer wrong. Nothing happens :("<<endl;
+        return 0;
+    }
 }
 
 void Tile::prideRock(){

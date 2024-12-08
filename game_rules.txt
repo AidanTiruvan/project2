@@ -1,4 +1,4 @@
-Aidan and Zach's Wonderful Game of Life Ripoff Rules:
+Aidan and Zach's Wonderful Game of Compilation Errors:
 Each Player picks a path, either Pride Lands or Cub Training
 If they pick Cub Training, they will pick an advisor up front
 Dont worry, you can still find advisors in the Pride Lands!
@@ -6,4 +6,15 @@ Advisors will offer ability to escape dangerous situations and provide more stat
 Pride Lands offers upfront gains, with less chance of long term gains
 Training offers less upfront gains, with more chance of long term gains
 However, training means more time passes, and more threats are present!
-Will add more rules when we know what we want to do.
+Tiles:
+Green has a 50 / 50 chance of an event occuring. If an event occurs, it may have a different outcome depending on age or advisor.
+Brown is a Hyena tile. It will subtract 300 stamina and take you to your last spot.
+Red is a Graveyard tile. 100 of each stat will be subtracted, and you will go back 10 spots.
+Purple is the Riddle tile. It will ask you a riddle, and if answered correctly, will award 500 wisdom.
+Pink is the Advisor tile. It will give you an advisor if you don't have one, or will give you the option to switch if you do.
+Blue is the Oasis tile. It will give 200 of each stat.
+Finally, Orange is Pride Rock. You must reach it and have more pride points than everyone else to win.
+Stats:
+Strength, Stamina, and Wisdom. For each 100 of these you have, you get 1000 pride points.
+Age. Affects some events.
+Pride Points. Collect the most of these to win the game!

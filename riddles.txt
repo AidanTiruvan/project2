@@ -2,3 +2,6 @@ Question(answer specifications)|Answer
 I can hold multiple functions, but I’m not a list. What am I? (single word, lowercase)|class
 I start a comment in C++. What am I? (symbol)|//
 I am the number of bits in a byte. What am I? (integer)|8
+I am a pathway that connects dots, but I'm not a road. I transmit signals, but I’m not a satellite. What am I? (single word, lowercase)|network
+I’m full of keys but can’t open any locks. What am I? (single word, lowercase)|keyboard
+Don't forget me at the end of a line, or an error might occur. What am I? (symbol)|;

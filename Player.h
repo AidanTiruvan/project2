@@ -7,6 +7,7 @@ class Player{
     private:
         string _name;
         string _advisor = "";
+        int _advisorNum;
         int _strength;
         int _stamina;
         int _wisdom;
@@ -37,6 +38,8 @@ class Player{
         string getPath();
         //get advisor
         string getAdvisor();
+        //get advisor num
+        int getAdvisorNum();
         
 
         //Setters
@@ -71,6 +74,7 @@ class Player{
         void setPath(string);
         //set advisor
         void setAdvisor(vector<string> advisors, int);
+        //set advisor num
 
         //Others
 
@@ -83,7 +87,9 @@ class Player{
         //show advisors
         void printAdvisors(vector<string>);
         //Will convert every 100 of a stat into 1000 pride points
-        void convertStats(int);
+        void convertStats();
+        //Will allow player to see current pride points with stats swtiched
+        void visualizeStats();
 
 };
 

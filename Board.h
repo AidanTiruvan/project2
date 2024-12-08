@@ -55,6 +55,8 @@ public:
     void importFiles();
     int checkValid(int start, int end, int choice);//including this since the stupid header file is being buggy
     void printLines();//this too
+    void duringTurnBoard();
+    void displayRules();
 };
 
 #endif

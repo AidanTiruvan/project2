@@ -35,6 +35,7 @@ Player::Player(string name, int strength, int stamina, int wisdom, int age){
         _age = 1;
     }
     _pride_points = 0;
+    _advisorNum = 0;
 }
 
 //Getters
@@ -69,6 +70,10 @@ string Player::getPath(){
 
 string Player::getAdvisor(){
     return _advisor;
+}
+
+int Player::getAdvisorNum(){
+    return _advisorNum;
 }
 
 //Setters
@@ -170,8 +175,21 @@ void Player::setPath(string choice) {
 }
 
 
-void Player::setAdvisor(vector<string> advisors, int choice){ //COULD RETURN AN INDEX VALUE TO REMOVE THAT VALUE FROM THE ORIGINAL VECTOR
+void Player::setAdvisor(vector<string> advisors, int choice){
+    string name;
     _advisor = advisors[choice - 1];
+    name = _advisor.substr(0, _advisor.find(' '));
+    if(name == "Rafiki"){
+        _advisorNum = 1;
+    }else if(name == "Nala"){
+        _advisorNum = 2;
+    }else if(name == "Sarabi"){
+        _advisorNum = 3;
+    }else if(name == "Zazu"){
+        _advisorNum = 4;
+    }else if(name == "Sarafina"){
+        _advisorNum = 5;
+    }
 }
 
 //Others
@@ -250,9 +268,37 @@ void Player::printStats(){
     cout<<"-------------------------------"<<endl;
 }
 
-void Player::convertStats(int stat){
-    while(stat > 99){
-        stat = stat - 100;
+void Player::convertStats(){
+    while(_strength > 99){
+        _strength = _strength - 100;
         _pride_points = _pride_points + 1000;
     }
+    while(_stamina > 99){
+        _stamina = _stamina - 100;
+        _pride_points = _pride_points + 1000;
+    }
+    while(_wisdom > 99){
+        _wisdom = _wisdom - 100;
+        _pride_points = _pride_points + 1000;
+    }
+}
+
+void Player::visualizeStats(){
+    int fakePride = _pride_points;
+    int fakeStrength = _strength;
+    int fakeStamina = _stamina;
+    int fakeWisdom = _wisdom;
+    while(fakeStrength > 99){
+        fakeStrength = fakeStrength - 100;
+        fakePride = fakePride + 1000;
+    }
+    while(fakeStamina > 99){
+        fakeStamina = fakeStamina - 100;
+        fakePride = fakePride + 1000;
+    }
+    while(fakeWisdom > 99){
+        fakeWisdom = fakeWisdom - 100;
+        fakePride = fakePride + 1000;
+    }
+    cout<<"Visualized Pride Points: "<<fakePride<<endl;
 }

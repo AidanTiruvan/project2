@@ -51,7 +51,7 @@ int main()
                 menuChoice = checkValid(1, 6, menuChoice);
                 printLines();
                 switch(menuChoice){
-                    case 1:{
+                    case 1:{ //SOME KINDA ISSUE WITH GAME OVER LOGIC NOT WORKING
                         spinner = rand() % 6 + 1;
                         cout << "Spinner result: " << spinner << endl;
                             bool reachedEnd = board.movePlayer(i, spinner);//pass the spinner here to make it only do the event for the final tile
@@ -59,12 +59,15 @@ int main()
                                 cout << "Player " << i + 1 << " has reached Pride Rock." << endl;
                                 //game_over = true;
                                 overCount++;
+                                if(overCount == numPlayers){
+                                    game_over = true;
+                                }
                             }
-                        }
-                        turn_over = true;
-                        printLines();
-                        board.displayBoard();
+                            printLines();
+                            board.displayBoard();
+                            turn_over = true;
                         break;
+                    }
                     
                     case 2:
                         while(!subExit){
@@ -89,8 +92,26 @@ int main()
                         }
                         break;
                     case 3:
-                        //make a submenu that lets them visualize total pride points att the moment
-                        board.displayStats(i);
+                        while(!subExit){
+                            cout<<"(1) Display Current Stats"<<endl;
+                            cout<<"(2) Visualize Current Final Pride Points"<<endl;
+                            cout<<"(3) Back"<<endl;
+                            subMenuChoice = checkValid(1, 3, subMenuChoice);
+                            printLines();
+                            switch(subMenuChoice){
+                                case 1:
+                                    board.displayStats(i);
+                                    subExit = true;
+                                    break;
+                                case 2:
+                                    board.getPlayer(i).visualizeStats();
+                                    subExit = true;
+                                    break;
+                                case 3:
+                                    subExit = true;
+                                    break;
+                            }
+                        }
                         break;
                     case 4:
                         if(board.getPlayer(i).getAdvisor() != ""){
@@ -100,22 +121,18 @@ int main()
                         }
                         break;
                     case 5:
-                        //Will print rules from imported game rules txt file
+                        board.displayRules();
                         break;
                     case 6:
                         //Just for testing
-                        turn_over = true;
-                        game_over = true;
-                        i = numPlayers;
+                        cout<<"What a shame."<<endl;
+                        exit(0);
                         break;
                     default:
                         cout<<"Invalid Input."<<endl;
                         break;
                 }
             }
-            if(overCount == numPlayers){ //stupid ass bug where it doesnt quit half the time
-            game_over = true;
-        }
         }
     }
     
@@ -166,9 +183,7 @@ int main()
     std::cout << "\nThe game is over! Here are the final scores:" << std::endl;
     for (int i = 0; i < numPlayers; i++)
     {
-        board.getPlayer(i).convertStats(board.getPlayer(i).getStrength());
-        board.getPlayer(i).convertStats(board.getPlayer(i).getStamina());
-        board.getPlayer(i).convertStats(board.getPlayer(i).getWisdom());
+        board.getPlayer(i).convertStats();
         int pridePoints = board.getPlayer(i).getPride();
         std::cout << "Player " << i + 1 << ": " << pridePoints << " Pride points" << std::endl;
     }

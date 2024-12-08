@@ -183,6 +183,7 @@ void Board::displayBoard() {
 bool Board::movePlayer(int player_index, int spinner) {
     // calculates the final position of the player after the spin
     int newPosition = _player_positions[player_index] + spinner;
+    int oldPosition = _player_positions[player_index];
     //IF NEW POSITION < 0, POSITION = 0 this is for graveyards and such
     // this is so that the player still shouldn't go farther than the board size
     if (newPosition >= _BOARD_SIZE) {
@@ -207,24 +208,41 @@ bool Board::movePlayer(int player_index, int spinner) {
 
     // trigger the regular event for the tile the player landed on
     Tile currentTile = _tiles[player_index][newPosition];
+    
+    //VARIABLES USED IN TILE INTERACTIONS
     int choice = 0;
-    if(currentTile.getColor() == 'G'){
-        players[player_index].addPride(currentTile.grassLand());
+    int advChoice = 0;
+    string advSwitch = "";
+    string riddlesArray[2];
+    string eventsArray[8];
+
+    //DIFFERENT TILES
+    if(currentTile.getColor() == 'G'){ //GREEN TILE EVENTS
+        duringTurnBoard();
+        size_t choice = rand() % _eventsVec.size();
+        split(_eventsVec[choice], '|', eventsArray, 8); //NEED TO MAKE THIS PATH DEPENDENT
+        players[player_index].addPride(currentTile.grassLand(eventsArray, players[player_index].getAdvisorNum(), players[player_index].getAge()));
     }else if(currentTile.getColor() == 'B'){
+        duringTurnBoard();
         auto [strengthChange, staminaChange, wisdomChange] = currentTile.oasisTile();
         players[player_index].addStrength(strengthChange);
         players[player_index].addStamina(staminaChange);
         players[player_index].addWisdom(wisdomChange);
-    }else if(currentTile.getColor() == 'P'){
+    }else if(currentTile.getColor() == 'P'){ //ADVISOR TILE
+        duringTurnBoard();
         if(players[player_index].getAdvisor() != ""){
             cout<<"Would you like to swtich your advisor? (1 = Yes | 2 = No)"<<endl;
             choice = checkValid(1, 2, choice);
-                if(choice == 1){
-                    players[player_index].printAdvisors(_advisorVec);
-                    //let pick advisor
-                }else if(choice == 2){
-                    cout<<"Your advisor thanks you for staying with them."<<endl;
-                }
+            if(choice == 1){
+                players[player_index].printAdvisors(_advisorVec);
+                advChoice = checkValid(1, static_cast<int> (_advisorVec.size()), advChoice);
+                advSwitch = players[player_index].getAdvisor();
+                players[player_index].setAdvisor(_advisorVec, advChoice);
+                _advisorVec.erase(_advisorVec.begin() + advChoice - 1);
+                _advisorVec.push_back(advSwitch);
+            }else if(choice == 2){
+                cout<<"Your advisor thanks you for staying with them."<<endl;
+            }
         }else{
             cout << "Player " << player_index + 1 << ", please select your advisor." << endl;
             players[player_index].printAdvisors(_advisorVec);
@@ -233,21 +251,43 @@ bool Board::movePlayer(int player_index, int spinner) {
             players[player_index].setAdvisor(_advisorVec, advisorChoice);
             _advisorVec.erase(_advisorVec.begin() + advisorChoice - 1);
         }
-    }else if(currentTile.getColor() == 'R'){
+    }else if(currentTile.getColor() == 'R'){ //GRAVEYARD TILE
+        duringTurnBoard();
         auto [strengthChange, staminaChange, wisdomChange] = currentTile.graveYard();
         players[player_index].addStrength(strengthChange);
         players[player_index].addStamina(staminaChange);
         players[player_index].addWisdom(wisdomChange);
         //Move player index back 10.
-    }else if(currentTile.getColor() == 'N'){
+        _player_positions[player_index] = newPosition - 10;
+        if(_player_positions[player_index] < 0){
+            _player_positions[player_index] = 0;
+        }
+    }else if(currentTile.getColor() == 'N'){ //HYENA TILE
+        duringTurnBoard();
         players[player_index].addStamina(currentTile.hyenaTile());
         //Move to previous index
-    }else if(currentTile.getColor() == 'U'){
-        currentTile.riddleTile();
+        _player_positions[player_index] = oldPosition;
+    }else if(currentTile.getColor() == 'U'){ //RIDDLE TILE
+        duringTurnBoard();
+        size_t choice = rand() % _riddleVec.size();
+        split(_riddleVec[choice], '|', riddlesArray, 2);
+        int wisdomChange = currentTile.riddleTile(riddlesArray);
+        players[player_index].addWisdom(wisdomChange);
     }else{
         //currentTile.prideRock();
     }
     
+    //checking to make sure players stats aren't negative
+    if(players[player_index].getStrength() < 0){
+        players[player_index].setStrength(0);
+    }
+    if(players[player_index].getStamina() < 0){
+        players[player_index].setStamina(0);
+    }
+    if(players[player_index].getWisdom() < 0){
+        players[player_index].setWisdom(0);
+    }
+
     //auto [prideChange, staminaChange, strengthChange, wisdomChange] = currentTile.event();//Should put in advisor and event vectors as parameters, and should
     //put in player[i]'s advisor name for event boosts and shit
 
@@ -318,6 +358,9 @@ void Board::importFiles() {
             getline(gameRules, input);
             _ruleVec.push_back(input);
         }
+        for(int i = 0; i < 3; i++){
+            getline(events, worthless);
+        }
         while (!events.eof()) {
             getline(events, input);
             _eventsVec.push_back(input);
@@ -357,4 +400,16 @@ int Board::checkValid(int start, int end, int choice){
 void Board::printLines(){
     cout<<"------------------------------------------------------------------------------------------------------------------------------------";
     cout<<"------------------------"<<endl;
+}
+
+void Board::duringTurnBoard(){
+    printLines();
+    displayBoard();
+    printLines();
+}
+
+void Board::displayRules(){
+    for(size_t i = 0; i < _ruleVec.size(); i++){
+        cout<<_ruleVec[i]<<endl;
+    }
 }
