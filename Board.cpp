@@ -60,7 +60,7 @@ Board::Board(int player_count) {
         int arrSize = 6;
         split(_characterVec[choice - 1], '|', arr, arrSize);
         //parse and initialize the player object from the selected character
-        players[i] = Player(arr[0], std::stoi(arr[2]), std::stoi(arr[3]), std::stoi(arr[4]), std::stoi(arr[1]));
+        players[i] = Player(arr[0], std::stoi(arr[2]), std::stoi(arr[3]), std::stoi(arr[4]), std::stoi(arr[1]), std::stoi(arr[5]));
         _characterVec.erase(_characterVec.begin() + choice - 1);
 
         // select path
@@ -214,13 +214,18 @@ bool Board::movePlayer(int player_index, int spinner) {
     int advChoice = 0;
     string advSwitch = "";
     string riddlesArray[2];
-    string eventsArray[8];
+    string eventsArray[9];
 
     //DIFFERENT TILES
     if(currentTile.getColor() == 'G'){ //GREEN TILE EVENTS
         duringTurnBoard();
         size_t choice = rand() % _eventsVec.size();
-        split(_eventsVec[choice], '|', eventsArray, 8); //NEED TO MAKE THIS PATH DEPENDENT
+        split(_eventsVec[choice], '|', eventsArray, 9);
+        while(stoi(eventsArray[1]) != players[player_index].getPathNum() && stoi(eventsArray[1]) != 0 
+        && split(_eventsVec[choice], '|', eventsArray, 9) == -1){ //This covers different path types
+            choice = rand() % _eventsVec.size();
+            split(_eventsVec[choice], '|', eventsArray, 9);
+        }
         players[player_index].addPride(currentTile.grassLand(eventsArray, players[player_index].getAdvisorNum(), players[player_index].getAge()));
     }else if(currentTile.getColor() == 'B'){
         duringTurnBoard();
@@ -271,6 +276,10 @@ bool Board::movePlayer(int player_index, int spinner) {
         duringTurnBoard();
         size_t choice = rand() % _riddleVec.size();
         split(_riddleVec[choice], '|', riddlesArray, 2);
+        while(split(_riddleVec[choice], '|', riddlesArray, 2) == -1){
+            choice = rand() % _riddleVec.size();
+            split(_riddleVec[choice], '|', riddlesArray, 2);
+        }
         int wisdomChange = currentTile.riddleTile(riddlesArray);
         players[player_index].addWisdom(wisdomChange);
     }else{

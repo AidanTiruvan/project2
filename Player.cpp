@@ -11,7 +11,7 @@ Player::Player(){
     _pride_points = 0;
 }
 
-Player::Player(string name, int strength, int stamina, int wisdom, int age){
+Player::Player(string name, int strength, int stamina, int wisdom, int age, int pridePoints){
     //add check for valid name
     _name = name;
     if(strength >= 100 && strength <= 1000){
@@ -34,7 +34,11 @@ Player::Player(string name, int strength, int stamina, int wisdom, int age){
     }else{
         _age = 1;
     }
-    _pride_points = 0;
+    if(pridePoints < 0){
+        _pride_points = 0;
+    }else{
+        _pride_points = pridePoints;
+    }
     _advisorNum = 0;
 }
 
@@ -66,6 +70,10 @@ int Player::getAge(){
 
 string Player::getPath(){
     return _path;
+}
+
+int Player::getPathNum(){
+    return _path_num;
 }
 
 string Player::getAdvisor(){

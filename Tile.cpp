@@ -17,11 +17,29 @@ void Tile::setColor(char newColor) {
     _color = newColor;
 }
 
+
+//Events:Description[0]|Path[1]|Advisor[2]|BasePride[3]|AgeLow[4]|AgeHigh[5]|AgePride[6]|AgeDesc[7]|AdvDesc[8]
 int Tile::grassLand(string events[], int advisorNum, int age){
-    if(rand() % 2 == 0){
+    if(rand() % 2 == 0){ //Means an event will happen
+        int eventPrideChange = 0;
+        int agePrideChange = 0;
+        cout<<"Event: "<<endl;
         cout<<events[0]<<endl;
-        //WILL BE MADE PATH DEPENDENT
-        return 100; //placeholder
+        if(advisorNum != stoi(events[2])){
+            eventPrideChange = stoi(events[3]);
+        }else{
+            cout<<events[8]<<endl;
+            if(stoi(events[3]) > 0){
+                eventPrideChange = 100;
+                cout<<"Your advisor provides 100 bonus pride points."<<endl;
+            }
+        }
+        if(age >= stoi(events[4]) && age <= stoi(events[5])){
+            agePrideChange = stoi(events[6]);
+            cout<<events[7]<<endl;
+        }
+        cout<<"Change in Pride Points: "<<eventPrideChange + agePrideChange<<endl;
+        return eventPrideChange + agePrideChange;
     }else{
         cout<<"You landed on an ordinary piece of land."<<endl;
         return 0;

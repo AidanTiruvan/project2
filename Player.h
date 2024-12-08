@@ -14,11 +14,12 @@ class Player{
         int _pride_points; //money equivalent
         int _age;
         string _path; //Path = 'p' for pridelands, 't' for train cub
+        int _path_num;
     public:
         //Default constructor, empty name, 100 for each value, pride 0, age 1
         Player();
         //name, strength, stamina, wisdom (all between 100 - 1000), age (1 - 20) Should default to lowest if invalid
-        Player(string, int, int, int, int);
+        Player(string, int, int, int, int, int);
         
         //Getters
 
@@ -40,6 +41,9 @@ class Player{
         string getAdvisor();
         //get advisor num
         int getAdvisorNum();
+        //get pathNum
+        int getPathNum();
+
         
 
         //Setters
