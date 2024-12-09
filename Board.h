@@ -1,25 +1,30 @@
 #include "Tile.h"
 #include "Player.h"
 #include <fstream>
+#include <vector>
+using namespace std;
+
 #ifndef BOARD_H
 #define BOARD_H
+
 class Board
 {
 private:
     static const int _BOARD_SIZE = 52;       // constant for the number of tiles in each player's path
     static const int _MAX_PLAYERS = 4;       // max players allowed in the game
 
-    Tile _tiles[_MAX_PLAYERS][_BOARD_SIZE];             // represents the tiles for each path 
-    int _player_positions[_MAX_PLAYERS];    // tracks each player's position on the board
-    Player players[_MAX_PLAYERS];           // an array of player objects to store the players and their stats
-    int _player_count;                      // the actual number of players in the game, set dynamically based on user input
+    Tile _prideTiles[_BOARD_SIZE];           // replaced _tiles with _prideTiles for pride lands board
+    Tile _cubTiles[_BOARD_SIZE];             // added _cubTiles for cub training board
+    int _player_positions[_MAX_PLAYERS];     // tracks each player's position on the board
+    Player players[_MAX_PLAYERS];            // an array of player objects to store the players and their stats
+    int _player_count;                       // the actual number of players in the game, set dynamically based on user input
 
     // Helper functions
-    void displayTile(int player_index, int pos);   // shows a single tile for the specified players position
-    bool isPlayerOnTile(int player_index, int pos); // checks if a player is standing on a specific tile (useful for board display logic)
+    void displayTile(char pathType, int pos);   //changed signature to displaytile
+    bool isPlayerOnTile(int player_index, char pathType, int pos); //modified the signature to include pathType
 
     // Tile initialization
-    void initializeTiles(string pathType, int index);   // sets up the tiles for each path
+    void initializeTiles();   // removed string pathType,int index parameters
 
     //Imports
     vector<string> _characterVec;

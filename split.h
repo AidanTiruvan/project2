@@ -2,7 +2,7 @@
 #ifndef SPLIT_H
 #define SPLIT_H
 
-int split(std::string input_string, char separator, std::string arr[], const int ARR_SIZE) {
+int split(string input_string, char separator, string arr[], const int ARR_SIZE) {
     int splitIndex = 0;
     int arrayCount = 0;
     int length = input_string.length();
