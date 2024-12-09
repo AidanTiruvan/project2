@@ -2,13 +2,13 @@ Description | PathType (0 = cubTraining; 1 = straight to the pride lands; 2 = ei
 Advisor (0 = none; 1 = Rafiki; 2 = Nala; 3 = Sarabi; 4 = Zazu; 5 = Sarafina) | PridePoints (lose or gain) |
 AgeLow | AgeHigh | Bonus PridePoints | Bonus Description if in age range | Bonus description if right advisor
 Observed a rare natural phenomenon|0|0|600|0|1|0|Not based on age|Not based on advisor
-Ambushed under the cover of darkness|2|2|-600|1|10|400|Your reflexes helped you react quickly, reducing the damage.|Nala's Night Vision revealed the enemies before they struck, reducing damage.
-Navigated dense, enchanted mist in forbidden lands|1|1|-300|11|20|500|Your experience allowed you to remain calm and find a safe path.|Rafiki’s Invisibility helped you pass unseen through the eerie fog, negating pride loss.
-Caught in a sudden, violent sandstorm|2|4|-500|10|20|600|Your resilience helped you endure until the storm passed.|Zazu’s Weather Control summoned winds that mostly protected you from the sandstorm.
-Participated in an exhausting, dawn-to-dusk endurance hunt|0|3|-400|1|10|700|Your youthful energy carried you through the hunt.|Sarabi’s Energy Manipulation restored your strength mid-hunt.
-Chased down a fleeing antelope across endless plains|0|5|100|1|10|500|Your speed training paid off in this crucial chase.|Sarafina’s Super Speed let you catch the antelope with ease.
-Stealth mission to reclaim stolen pride relic|1|1|200|10|20|500|Your stealth and determination helped you recover the relic.|Rafiki’s Invisibility kept you hidden from hostile eyes.
-Night patrol under a moonless sky|1|2|100|10|20|600|Your patience kept you alert despite the darkness.|Nala’s Night Vision revealed every shadowy movement.
-Lightning storm ignites wildfire near you|2|4|-200|10|20|700|Your leadership helped others find safety.|Zazu’s Weather Control summoned rain, quelling the flames.
-Participated in a high-speed rescue of a lost cub|0|5|200|10|20|600|Your quick thinking guided you through rough terrain.|Sarafina’s Super Speed helped you reach the cub in record time.
-Recharging under a spectacular aurora display|0|3|1000|1|10|100|You felt inspired by the mystical lights above.|Sarabi’s Energy Manipulation harnessed the aurora's power, renewing your strength.
+Ambushed under the cover of darkness|2|2|-600|1|10|400|Your reflexes helped you react quickly, reducing the damage. (Ages 1-10)|Nala's Night Vision revealed the enemies before they struck, reducing damage.
+Navigated dense, enchanted mist in forbidden lands|1|1|-300|10|20|500|Your experience allowed you to remain calm and find a safe path. (Ages 10-20)|Rafiki’s Invisibility helped you pass unseen through the eerie fog, negating pride loss.
+Caught in a sudden, violent sandstorm|2|4|-500|10|20|600|Your resilience helped you endure until the storm passed. (Ages 10-20)|Zazu’s Weather Control summoned winds that mostly protected you from the sandstorm.
+Participated in an exhausting, dawn-to-dusk endurance hunt|0|3|-400|1|10|700|Your youthful energy carried you through the hunt. (Ages 1-10)|Sarabi’s Energy Manipulation restored your strength mid-hunt.
+Chased down a fleeing antelope across endless plains|0|5|100|1|10|500|Your speed training paid off in this crucial chase. (Ages 1-10)|Sarafina’s Super Speed let you catch the antelope with ease.
+Stealth mission to reclaim stolen pride relic|1|1|200|10|20|500|Your stealth and determination helped you recover the relic. (Ages 10-20)|Rafiki’s Invisibility kept you hidden from hostile eyes.
+Night patrol under a moonless sky|1|2|100|10|20|600|Your patience kept you alert despite the darkness. (Ages 10-20)|Nala’s Night Vision revealed every shadowy movement.
+Lightning storm ignites wildfire near you|2|4|-200|10|20|700|Your leadership helped others find safety. (Ages 10-20)|Zazu’s Weather Control summoned rain, quelling the flames.
+Participated in a high-speed rescue of a lost cub|0|5|200|1|10|600|Your quick thinking guided you through rough terrain.(Ages 1-10)|Sarafina’s Super Speed helped you reach the cub in record time.
+Recharging under a spectacular aurora display|0|3|1000|1|10|100|You felt inspired by the mystical lights above. (Ages 1-10)|Sarabi’s Energy Manipulation harnessed the aurora's power, renewing your strength.

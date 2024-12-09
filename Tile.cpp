@@ -30,7 +30,7 @@ int Tile::grassLand(string events[], int advisorNum, int age){
         }else{
             cout<<events[8]<<endl;
             if(stoi(events[3]) > 0){
-                eventPrideChange = 100;
+                eventPrideChange = stoi(events[3]) + 100;
                 cout<<"Your advisor provides 100 bonus pride points."<<endl;
             }
         }

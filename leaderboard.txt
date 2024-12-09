@@ -1,7 +1,7 @@
 ===== Leaderboard =====
-Date: 2024-12-09 15:26:44
+Date: 2024-12-09 15:58:21
 
-Player 1: 22100 Pride Points
-Player 4: 21400 Pride Points
-Player 2: 21100 Pride Points
-Player 3: 21100 Pride Points
+Player 1: 24300 Pride Points
+Player 3: 23200 Pride Points
+Player 2: 20300 Pride Points
+Player 4: 19500 Pride Points

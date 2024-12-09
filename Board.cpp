@@ -120,9 +120,9 @@ void Board::initializeTiles() { // signature changed to no arguments
             } else {
                 int color_choice = rand() % 100;
                 if (color_choice < 30) _prideTiles[i].setColor('P');
-                else if (color_choice < 45) _prideTiles[i].setColor('B');
-                else if (color_choice < 60) _prideTiles[i].setColor('R');
-                else if (color_choice < 80) _prideTiles[i].setColor('N');
+                else if (color_choice < 60) _prideTiles[i].setColor('B');
+                else if (color_choice < 75) _prideTiles[i].setColor('R');
+                else if (color_choice < 90) _prideTiles[i].setColor('N');
                 else _prideTiles[i].setColor('U');
             }
         }
@@ -143,7 +143,7 @@ void Board::initializeTiles() { // signature changed to no arguments
             } else {
                 int color_choice = rand() % 100;
                 if (color_choice < 10) _cubTiles[i].setColor('P');
-                else if (color_choice < 25) _cubTiles[i].setColor('B');
+                else if (color_choice < 35) _cubTiles[i].setColor('B');
                 else if (color_choice < 55) _cubTiles[i].setColor('R');
                 else if (color_choice < 80) _cubTiles[i].setColor('N');
                 else _cubTiles[i].setColor('U');
