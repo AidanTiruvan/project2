@@ -68,8 +68,18 @@ int main()
     int subMenuChoice = 0;
     bool subExit = false;
     int spinner;
-    int winningPlayer = -1; // To store the index of the winning player
-    int playersFinished = 0; // To track the number of players who have reached Pride Rock
+    int winningPlayer = -1; // to store the index of the winning player
+    int playersFinished = 0; // to track the number of players who have reached Pride Rock
+    vector<bool> finished(numPlayers, false); // To track which players have reached Pride Rock
+
+    // Initialize playersFinished based on players already at Pride Rock
+    for(int i = 0; i < numPlayers; i++){
+        if(board.getPlayerPosition(i) >= board.getBoardSize() - 1){
+            playersFinished++;
+            finished[i] = true;
+            cout << "Debug: Player " << i + 1 << " is already at Pride Rock at game start." << endl;
+        }
+    }
 
     while(!game_over){
         for(int i = 0; i < numPlayers; i++){
@@ -102,11 +112,15 @@ int main()
 
                         if (reachedEnd){
                             cout << "Player " << i + 1 << " has reached Pride Rock." << endl;
-                            // increment the number of players who have finished
-                            playersFinished++;
-                            // check if all players have reached Pride Rock
-                            if(playersFinished == numPlayers){
-                                game_over = true; // end the game if all players have finished
+                            // increment the number of players who have finished if not already done
+                            if(!finished[i]){
+                                playersFinished++;
+                                finished[i] = true;
+                                // check if all players have reached Pride Rock
+                                if(playersFinished == numPlayers){
+                                    game_over = true; // end the game if all players have finished
+                                    cout << "All players have reached Pride Rock, game over." << endl;
+                                }
                             }
                         }
 
