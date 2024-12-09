@@ -3,16 +3,15 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
-#include <algorithm>
 #include "Board.h"
 #include "Tile.h"
 #include "Player.h"
 #include "others.h"
 
-// define the PlayerScore structure to hold player number and pride points
+// define the playerscore structure to hold player number and pride points
 struct PlayerScore {
-    int playerNumber; // player identifier (e.g., Player 1, Player 2, etc.)
-    int pridePoints;  // player's pride points
+    int playerNumber; // player identifier
+    int pridePoints;  // players pride points
 
     // constructor for convenience
     PlayerScore(int number, int points) : playerNumber(number), pridePoints(points) {}
@@ -70,6 +69,7 @@ int main()
     bool subExit = false;
     int spinner;
     int winningPlayer = -1; // To store the index of the winning player
+    int playersFinished = 0; // To track the number of players who have reached Pride Rock
 
     while(!game_over){
         for(int i = 0; i < numPlayers; i++){
@@ -102,9 +102,12 @@ int main()
 
                         if (reachedEnd){
                             cout << "Player " << i + 1 << " has reached Pride Rock." << endl;
-                            // Immediately end the game when a player reaches Pride Rock
-                            game_over = true;
-                            winningPlayer = i; 
+                            // increment the number of players who have finished
+                            playersFinished++;
+                            // check if all players have reached Pride Rock
+                            if(playersFinished == numPlayers){
+                                game_over = true; // end the game if all players have finished
+                            }
                         }
 
                         printLines();
@@ -185,7 +188,7 @@ int main()
                 }
 
                 if(game_over){
-                    // if the game ended because a player reached Pride Rock or ended early, break out of turn loop
+                    // if the game ended because all players reached Pride Rock or ended early, break out of turn loop
                     break;
                 } else {
                     // end the player's turn after one action
@@ -254,46 +257,49 @@ int main()
 
     cout << "\ncongrats player " << winnerIndex + 1 << " u have the most pride" << endl;
 
-    // create vector to hold player scores
-    vector<PlayerScore> leaderboard;
-    for(int i = 0; i < numPlayers; ++i){
-        int pride = board.getPlayer(i).getPride();
-        leaderboard.emplace_back(i + 1, pride); // player numbers start at 1
-    }
+    // process leaderboard only if all players have finished
+    if(playersFinished == numPlayers){
+        // create vector to hold player scores
+        vector<PlayerScore> leaderboard;
+        for(int i = 0; i < numPlayers; ++i){
+            int pride = board.getPlayer(i).getPride();
+            leaderboard.emplace_back(i + 1, pride); // player numbers start at 1
+        }
 
-    // sort the leaderboard using bubble sort and get the sorted vector
-    vector<PlayerScore> sortedLeaderboard = bubbleSortLeaderboard(leaderboard);
+        // sort the leaderboard using bubble sort and get the sorted vector
+        vector<PlayerScore> sortedLeaderboard = bubbleSortLeaderboard(leaderboard);
 
-    // open a file stream to write the leaderboard
-    ofstream leaderboardFile("leaderboard.txt");
-    if(!leaderboardFile){
-        cerr << "Error: Could not open leaderboard.txt for writing." << endl;
-        return 1; // exit with error code
-    }
+        // open a file stream to write the leaderboard
+        ofstream leaderboardFile("leaderboard.txt");
+        if(!leaderboardFile){
+            cerr << "Error: Could not open leaderboard.txt for writing." << endl;
+            return 1; // exit with error code
+        }
 
-    // write a header to the file
-    leaderboardFile << "===== Leaderboard =====\n";
-    // get the current date and time
-    time_t now = time(nullptr);
-    char mbstr[100];
-    if(strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", localtime(&now))){
-        leaderboardFile << "Date: " << mbstr << "\n\n";
-    } else {
-        leaderboardFile << "Date: Unknown\n\n";
-    }
+        // write a header to the file
+        leaderboardFile << "===== Leaderboard =====\n";
+        // get the current date and time
+        time_t now = time(nullptr);
+        char mbstr[100];
+        if(strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", localtime(&now))){
+            leaderboardFile << "Date: " << mbstr << "\n\n";
+        } else {
+            leaderboardFile << "Date: Unknown\n\n";
+        }
 
-    // write each players score to the file
-    for(const PlayerScore &player : sortedLeaderboard){
-        leaderboardFile << "Player " << player.playerNumber << ": " << player.pridePoints << " Pride Points\n";
-    }
-    leaderboardFile.close(); // close the file stream
+        // write each players score to the file
+        for(const PlayerScore &player : sortedLeaderboard){
+            leaderboardFile << "Player " << player.playerNumber << ": " << player.pridePoints << " Pride Points\n";
+        }
+        leaderboardFile.close(); // close the file stream
 
-    // display the sorted leaderboard to the users
-    cout << "\n===== Final Leaderboard =====\n";
-    for(int i = 0; i < sortedLeaderboard.size(); ++i){
-        cout << (i + 1) << ". Player " << sortedLeaderboard[i].playerNumber 
-                  << " - " << sortedLeaderboard[i].pridePoints << " Pride Points\n";
+        // display the sorted leaderboard to the users
+        cout << "\n===== Final Leaderboard =====\n";
+        for(int i = 0; i < sortedLeaderboard.size(); ++i){
+            cout << (i + 1) << ". Player " << sortedLeaderboard[i].playerNumber 
+                 << " - " << sortedLeaderboard[i].pridePoints << " Pride Points\n";
+        }
     }
 
     return 0;
-}
+} // end of main
