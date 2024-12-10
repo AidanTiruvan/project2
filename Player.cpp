@@ -1,5 +1,7 @@
 #include "Player.h"
 
+//Zach Roberson and Aidan Tiruvan
+
 //Constructors
 
 Player::Player(){
@@ -159,7 +161,6 @@ void Player::subWisdom(int wisdom){
 
 void Player::setPride(int pridePoints){
     _pride_points = pridePoints;
-    //Will want to include add and subtract for pride points
 }
 
 void Player::addPride(int prideChange){
@@ -174,15 +175,24 @@ void Player::setAge(int age){
     }
 }
 
+//Picks path and provides bonuses from workbook
 void Player::setPath(string choice) {
         if (choice == "1") {
             _path = "P";
+            addPride(2500);
+            addStrength(200);
+            addStamina(200);
+            addWisdom(200);
         } else if (choice == "2") {
             _path = "T";
+            addPride(-5000);
+            addStrength(500);
+            addStamina(500);
+            addWisdom(1000);
     }
 }
 
-
+//Sets advisor num for use in events
 void Player::setAdvisor(vector<string> advisors, int choice){
     string name;
     _advisor = advisors[choice - 1];
@@ -276,21 +286,16 @@ void Player::printStats(){
     cout<<"-------------------------------"<<endl;
 }
 
-void Player::convertStats(){
-    while(_strength > 99){
-        _strength = _strength - 100;
-        _pride_points = _pride_points + 1000;
-    }
-    while(_stamina > 99){
-        _stamina = _stamina - 100;
-        _pride_points = _pride_points + 1000;
-    }
-    while(_wisdom > 99){
-        _wisdom = _wisdom - 100;
-        _pride_points = _pride_points + 1000;
-    }
+//Final computation for end of game
+int Player::finalStats(){
+    int finalPride = _pride_points;
+    finalPride += (_strength / 100) * 1000;
+    finalPride += (_stamina / 100) * 1000;
+    finalPride += (_wisdom / 100) * 1000;
+    return finalPride;
 }
 
+//Lets player see stats before end of game converted to pride points
 void Player::visualizeStats(){
     int fakePride = _pride_points;
     int fakeStrength = _strength;

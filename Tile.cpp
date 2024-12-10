@@ -1,6 +1,8 @@
 #include "Tile.h"
 #include <iostream>
 
+//Zach Roberson and Aidan Tiruvan
+
 // default constructor cuz most are green
 Tile::Tile() : _color('G') {}
 

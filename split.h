@@ -1,6 +1,7 @@
 #include "Player.h"
 #ifndef SPLIT_H
 #define SPLIT_H
+//Zach Roberson and Aidan Tiruvan
 
 int split(string input_string, char separator, string arr[], const int ARR_SIZE) {
     int splitIndex = 0;

@@ -8,6 +8,9 @@
 #include "Player.h"
 #include "others.h"
 
+//Zach Roberson and Aidan Tiruvan
+
+
 // define the playerscore structure to hold player number and pride points
 struct PlayerScore {
     int playerNumber; // player identifier
@@ -68,7 +71,7 @@ int main()
     int subMenuChoice = 0;
     bool subExit = false;
     int spinner;
-    int winningPlayer = -1; // to store the index of the winning player
+    //int winningPlayer = -1; // to store the index of the winning player
     int playersFinished = 0; // to track the number of players who have reached Pride Rock
     vector<bool> finished(numPlayers, false); // To track which players have reached Pride Rock
 
@@ -84,7 +87,18 @@ int main()
     while(!game_over){
         for(int i = 0; i < numPlayers; i++){
             turn_over = false;
+            playersFinished = 0;
             // check if the player has already reached the final tile
+            for(int j = 0; j < numPlayers; j++){
+                if(board.getPlayerPosition(j) >= board.getBoardSize() - 1){
+                    playersFinished++;
+                }
+            }
+
+            if(playersFinished == numPlayers){
+                game_over = true;
+            }
+            
             if(board.getPlayerPosition(i) >= board.getBoardSize() - 1){ 
                 // player finished, skip their turn
                 turn_over = true;
@@ -105,31 +119,15 @@ int main()
                 printLines();
 
                 switch(menuChoice){
-                    case 1:{ //s some kinda issue with game over logic not working
+                    case 1:{
                         spinner = rand() % 6 + 1;
                         cout << "Spinner result: " << spinner << endl;
-                        bool reachedEnd = board.movePlayer(i, spinner); //pass the spinner here to make it only do the event for the final tile
-
-                        if (reachedEnd){
-                            cout << "Player " << i + 1 << " has reached Pride Rock." << endl;
-                            // increment the number of players who have finished if not already done
-                            if(!finished[i]){
-                                playersFinished++;
-                                finished[i] = true;
-                                // check if all players have reached Pride Rock
-                                if(playersFinished == numPlayers){
-                                    game_over = true; // end the game if all players have finished
-                                    cout << "All players have reached Pride Rock, game over." << endl;
-                                }
-                            }
-                        }
-
+                        board.movePlayer(i, spinner); //pass the spinner here to make it only do the event for the final tile
                         printLines();
                         board.displayBoard(); //displayBoard now shows the updated positions on both boards
                         turn_over = true;
                         break;
                     }
-                    
                     case 2:
                         while(!subExit){
                             cout << "(1) Show Lane" << endl;
@@ -143,7 +141,7 @@ int main()
                                     subExit = true;
                                     break;
                                 case 2:
-                                    cout << "Pride Points: " << board.getPlayer(i).getPride() << endl; //Will need to remember player name input
+                                    cout << "Pride Points: " << board.getPlayer(i).getPride() << endl;
                                     subExit = true;
                                     break;
                                 case 3:
@@ -192,30 +190,16 @@ int main()
                         board.displayRules();
                         break;
                     case 6:
-                        //just for testing
                         cout << "What a shame." << endl;
                         game_over = true; // end the game early
+                        exit(0);
                         break;
                     default:
                         cout << "Invalid Input." << endl;
                         break;
                 }
-
-                if(game_over){
-                    // if the game ended because all players reached Pride Rock or ended early, break out of turn loop
-                    break;
-                } else {
-                    // end the player's turn after one action
-                    break;
-                }
-            }
-
-            if(game_over){
-                // if the game ended during this player's turn, break out of the for loop
-                break;
             }
         } // end for loop
-
     } // end while(!game_over)
 
     /*
@@ -256,27 +240,28 @@ int main()
             }
         }
     */
-
+    
     // determine the winner based on the highest pride points
     int winnerIndex = 0;
-    int maxPridePoints = board.getPlayer(0).getPride();
+    int maxPridePoints = board.getPlayer(0).finalStats();
     for (int i = 1; i < numPlayers; i++)
     {
-        if (board.getPlayer(i).getPride() > maxPridePoints)
+        if (board.getPlayer(i).finalStats() > maxPridePoints)
         {
-            maxPridePoints = board.getPlayer(i).getPride();
+            maxPridePoints = board.getPlayer(i).finalStats();
             winnerIndex = i;
         }
     }
+    printLines();
 
-    cout << "\ncongrats player " << winnerIndex + 1 << " u have the most pride" << endl;
+    cout << "\nCongrats Player " << winnerIndex + 1 << "! You have the most pride!" << endl;
 
     // process leaderboard only if all players have finished
-    if(playersFinished == numPlayers){
+    //if(playersFinished == numPlayers){
         // create vector to hold player scores
         vector<PlayerScore> leaderboard;
         for(int i = 0; i < numPlayers; ++i){
-            int pride = board.getPlayer(i).getPride();
+            int pride = board.getPlayer(i).finalStats();
             leaderboard.emplace_back(i + 1, pride); // player numbers start at 1
         }
 
@@ -313,7 +298,8 @@ int main()
             cout << (i + 1) << ". Player " << sortedLeaderboard[i].playerNumber 
                  << " - " << sortedLeaderboard[i].pridePoints << " Pride Points\n";
         }
-    }
+    //}
+    cout<<endl;
 
     return 0;
 } // end of main

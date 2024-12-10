@@ -4,6 +4,8 @@
 #include "Player.h"
 #include <tuple>
 
+//Zach Roberson and Aidan Tiruvan
+
 class Tile {
 private:
     char _color; // represents the color of the tile the player is on in a char for simplicity
@@ -26,7 +28,7 @@ public:
     int riddleTile(string riddles[]); //if right, plus 500 wisdom
     void prideRock(); 
 
-    tuple<int, int, int, int> event(string array[], string array2[]) const;
+    //tuple<int, int, int, int> event(string array[], string array2[]) const;
 };
 
 #endif

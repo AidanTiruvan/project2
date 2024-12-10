@@ -3,6 +3,9 @@
 using namespace std;
 #ifndef PLAYER_H
 #define PLAYER_H
+
+//Zach Roberson and Aidan Tiruvan
+
 class Player{
     private:
         string _name;
@@ -91,7 +94,7 @@ class Player{
         //show advisors
         void printAdvisors(vector<string>);
         //Will convert every 100 of a stat into 1000 pride points
-        void convertStats();
+        int finalStats();
         //Will allow player to see current pride points with stats swtiched
         void visualizeStats();
 

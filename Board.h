@@ -7,6 +7,8 @@ using namespace std;
 #ifndef BOARD_H
 #define BOARD_H
 
+//Zach Roberson and Aidan Tiruvan
+
 class Board
 {
 private:
@@ -51,17 +53,17 @@ public:
     Player getPlayer(int player_index);  // returns a copy of a player object
 
     //Stats
-    void displayStats(int index);
-    void playerPride(int index);
-    void playerAdvisor(int index);
-    static const int getBoardSize();
+    void displayStats(int index);  //prints out a players stats, I was too lazy to type getPlayer in main
+    void playerPride(int index);  //same thing, but prints out pride points
+    void playerAdvisor(int index);  //same
+    static const int getBoardSize(); //returns size of board in case ever increased or decreased
 
     //Imports
-    void importFiles();
+    void importFiles(); //Imports all files, will exit if any fails to open
     int checkValid(int start, int end, int choice);//including this since the stupid header file is being buggy
     void printLines();//this too
-    void duringTurnBoard();
-    void displayRules();
+    void duringTurnBoard(); //Prints out a board and print lines so movement can be seen during a move
+    void displayRules(); //Prints out a list of rules, variable so can type in rule text file and changes will be reflected
 };
 
 #endif
