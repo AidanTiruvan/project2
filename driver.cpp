@@ -277,15 +277,6 @@ int main()
 
         // write a header to the file
         leaderboardFile << "===== Leaderboard =====\n";
-        // get the current date and time
-        time_t now = time(nullptr);
-        char mbstr[100];
-        if(strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", localtime(&now))){
-            leaderboardFile << "Date: " << mbstr << "\n\n";
-        } else {
-            leaderboardFile << "Date: Unknown\n\n";
-        }
-
         // write each players score to the file
         for(const PlayerScore &player : sortedLeaderboard){
             leaderboardFile << "Player " << player.playerNumber << ": " << player.pridePoints << " Pride Points\n";
