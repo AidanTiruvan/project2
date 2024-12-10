@@ -277,14 +277,24 @@ bool Board::movePlayer(int player_index, int spinner) {
     switch (currentTile.getColor()) {
         case 'G': { // GREEN TILE EVENTS
             duringTurnBoard();
+            bool picked = false;
             size_t eventChoice = rand() % _eventsVec.size(); // renamed local var to not conflict with int choice above
             string eventsArray[9];
             split(_eventsVec[eventChoice], '|', eventsArray, 9);
-            while (stoi(eventsArray[1]) != (pathType == 'T' ? 0 : 1) &&
-                   stoi(eventsArray[1]) != 0 &&
-                   split(_eventsVec[eventChoice], '|', eventsArray, 9) == -1) { 
-                eventChoice = rand() % _eventsVec.size();
-                split(_eventsVec[eventChoice], '|', eventsArray, 9);
+            while (!picked){
+                   //(stoi(eventsArray[1]) != (players[player_index].getPathNum()) &&
+                   //stoi(eventsArray[1]) != 2 &&
+                   //stoi(eventsArray[1]) != 0 &&
+                   //split(_eventsVec[eventChoice], '|', eventsArray, 9) == -1) { 
+                if(stoi(eventsArray[1]) == players[player_index].getPathNum() || stoi(eventsArray[1]) == 2){
+                    picked = true;
+                }else if(split(_eventsVec[eventChoice], '|', eventsArray, 9) == -1){
+                    eventChoice = rand() % _eventsVec.size();
+                    split(_eventsVec[eventChoice], '|', eventsArray, 9);
+                }else{
+                    eventChoice = rand() % _eventsVec.size();
+                    split(_eventsVec[eventChoice], '|', eventsArray, 9);
+                }
             }
             if (pathType == 'P') {
                 // assuming grassLand returns the pride points to add

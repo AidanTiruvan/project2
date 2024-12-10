@@ -179,12 +179,14 @@ void Player::setAge(int age){
 void Player::setPath(string choice) {
         if (choice == "1") {
             _path = "P";
+            _path_num = 1;
             addPride(2500);
             addStrength(200);
             addStamina(200);
             addWisdom(200);
         } else if (choice == "2") {
             _path = "T";
+            _path_num = 0;
             addPride(-5000);
             addStrength(500);
             addStamina(500);

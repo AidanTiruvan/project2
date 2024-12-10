@@ -1,4 +1,3 @@
 ===== Leaderboard =====
-Player 3: 70200 Pride Points
-Player 1: 65100 Pride Points
-Player 2: 62700 Pride Points
+Player 2: 62200 Pride Points
+Player 1: 54200 Pride Points
