@@ -278,7 +278,7 @@ int main()
         // write a header to the file
         leaderboardFile << "===== Leaderboard =====\n";
         // write each players score to the file
-        for(const PlayerScore &player : sortedLeaderboard){
+        for (PlayerScore player : sortedLeaderboard) {
             leaderboardFile << "Player " << player.playerNumber << ": " << player.pridePoints << " Pride Points\n";
         }
         leaderboardFile.close(); // close the file stream

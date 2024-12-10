@@ -3,6 +3,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
+#include <fstream>
+#include <vector>
+#include <string>
 
 #define RED "\033[48;2;230;10;10m"
 #define GREEN "\033[48;2;34;139;34m"
@@ -14,8 +17,9 @@
 #define GREY "\033[48;2;128;128;128m"
 #define RESET "\033[0m"
 
+// Zach Roberson and Aidan Tiruvan
 
-//Zach Roberson and Aidan Tiruvan
+using namespace std;
 
 // default constructor for single-player board
 Board::Board() {
@@ -28,15 +32,15 @@ Board::Board() {
 
 // constructor for custom number of players
 Board::Board(int player_count) {
-    importFiles(); //If any import fails, will exit
-    
-    if (player_count > _MAX_PLAYERS) { //Makes sure players dont exceed max
+    importFiles(); // if any import fails, will exit
+
+    if (player_count > _MAX_PLAYERS) { // makes sure players don't exceed max
         _player_count = _MAX_PLAYERS;
     } else {
         _player_count = player_count;
     }
 
-    //Character selection
+    // character selection
     for (int i = 0; i < _player_count; i++) {
         cout << "Player " << i + 1 << ", select your character." << endl;
 
@@ -45,36 +49,36 @@ Board::Board(int player_count) {
             string arr[6];
             int arrSize = 6;
             if (split(_characterVec[j], '|', arr, arrSize) != -1) {
-                //formatted output of character options
+                // formatted output of character options
                 cout << "(" << j + 1 << ") " << arr[0]
-                          << ", Age: " << arr[1]
-                          << ", Strength: " << arr[2]
-                          << ", Stamina: " << arr[3]
-                          << ", Wisdom: " << arr[4]
-                          << ", Pride Points: " << arr[5] << endl;
+                     << ", Age: " << arr[1]
+                     << ", Strength: " << arr[2]
+                     << ", Stamina: " << arr[3]
+                     << ", Wisdom: " << arr[4]
+                     << ", Pride Points: " << arr[5] << endl;
             }
         }
 
         // select the character
         int choice = 0;
-        choice = checkValid(1, static_cast<int> (_characterVec.size()), choice);
+        choice = checkValid(1, static_cast<int>(_characterVec.size()), choice);
         printLines();
 
         string arr[6];
         int arrSize = 6;
         split(_characterVec[choice - 1], '|', arr, arrSize);
-        //parse and initialize the player object from the selected character
+        // parse and initialize the player object from the selected character
         players[i] = Player(arr[0], stoi(arr[2]), stoi(arr[3]), stoi(arr[4]), stoi(arr[1]), stoi(arr[5]));
         _characterVec.erase(_characterVec.begin() + choice - 1);
 
         // select path
-        string path_type; //Have it as string for error handling here, weird bug when its an int or char
+        string path_type; // have it as string for error handling here, weird bug when its an int or char
         cout << "Player " << i + 1 << ", please select your path. Pride Lands or Cub Training." << endl;
-        cout<<"1: Pride Lands"<<endl;
-        cout<<"2: Cub Training"<<endl;
+        cout << "1: Pride Lands" << endl;
+        cout << "2: Cub Training" << endl;
         cin >> path_type;
-        while(path_type != "1" && path_type != "2"){
-            cout<<"Invalid choice."<<endl;
+        while (path_type != "1" && path_type != "2") {
+            cout << "Invalid choice." << endl;
             cin >> path_type;
         }
         players[i].setPath(path_type);
@@ -83,9 +87,9 @@ Board::Board(int player_count) {
         // if the player chooses the cub training they should select advisor
         if (players[i].getPath() == "T") {
             cout << "Player " << i + 1 << " - ";
-            players[i].printAdvisors(_advisorVec); //Displays a numbered list of advisors
+            players[i].printAdvisors(_advisorVec); // displays a numbered list of advisors
             int advisorChoice = 0;
-            advisorChoice = checkValid(1, static_cast<int> (_advisorVec.size()), advisorChoice);
+            advisorChoice = checkValid(1, static_cast<int>(_advisorVec.size()), advisorChoice);
             players[i].setAdvisor(_advisorVec, advisorChoice);
             _advisorVec.erase(_advisorVec.begin() + advisorChoice - 1); // remove the advisor properly
             printLines();
@@ -110,13 +114,13 @@ void Board::initializeBoard() {
 void Board::initializeTiles() { // signature changed to no arguments
     // Initialize Pride Lands tiles
     int green_count_pride = 0; // Track the number of green tiles for Pride Lands
-    for (int i = 0; i < _BOARD_SIZE; i++) { //filling _prideTiles
-        if (i == 0) { // Set the first tile as Grey for "Starting Point"
+    for (int i = 0; i < _BOARD_SIZE; i++) { // filling _prideTiles
+        if (i == 0) { // set the first tile as Grey for starting point
             _prideTiles[i].setColor('Y');
-        } else if (i == _BOARD_SIZE - 1) { // Set the last tile as Orange for "Pride Rock"
+        } else if (i == _BOARD_SIZE - 1) { // set the last tile as Orange for pride roock
             _prideTiles[i].setColor('O');
         } else {
-            // Assign 'G' with a certain probability or count, else assign other colors based on path type "P"
+            // assigns G with a certain probability or count else assign other colors based on path type P
             if (green_count_pride < 30 && (rand() % (_BOARD_SIZE - i) <= 30 - green_count_pride)) {
                 _prideTiles[i].setColor('G');
                 green_count_pride++;
@@ -131,15 +135,15 @@ void Board::initializeTiles() { // signature changed to no arguments
         }
     }
 
-    // Initialize Cub Training tiles
-    int green_count_cub = 0; // Track the number of green tiles for Cub Training
+    // initialize Cub Training tiles
+    int green_count_cub = 0; // tracks the number of green tiles for Cub Training
     for (int i = 0; i < _BOARD_SIZE; i++) { // filling _cubTiles
-        if (i == 0) { // Set the first tile as Grey for "Starting Point"
+        if (i == 0) { // set the first tile as grey for a starting point
             _cubTiles[i].setColor('Y');
-        } else if (i == _BOARD_SIZE - 1) { // Set the last tile as Orange for "Pride Rock"
+        } else if (i == _BOARD_SIZE - 1) { // sets the last tile as orange for pride rock
             _cubTiles[i].setColor('O');
         } else {
-            // Assign 'G' with a certain probability or count, else assign other colors based on path type "T"
+            //assign G with a certain probability or count or else assign other colors based on path type t
             if (green_count_cub < 30 && (rand() % (_BOARD_SIZE - i) <= 30 - green_count_cub)) {
                 _cubTiles[i].setColor('G');
                 green_count_cub++;
@@ -159,12 +163,18 @@ void Board::initializeTiles() { // signature changed to no arguments
 void Board::displayTile(char pathType, int pos) { // updated signature to displayTile(char pathType, int pos)
     string color = "";
     bool anyPlayerOnTile = false; // track if any player is on this tile
-    string playersOnTile = ""; //to list multiple players
+    string playersOnTile = ""; // to list multiple players
 
     // determine tile color based on board type
-    char tileColor = (pathType == 'P') ? _prideTiles[pos].getColor() : _cubTiles[pos].getColor(); //select correct board
+    char tileColor;
+    if (pathType == 'P') {
+        tileColor = _prideTiles[pos].getColor();
+    } else {
+        tileColor = _cubTiles[pos].getColor();
+    }
 
-    switch (tileColor) { // no change in logic just using tileColor
+    //assign color codes based on tile color
+    switch (tileColor) { // no change in logic just using tilecolor
         case 'R': color = RED; break;
         case 'G': color = GREEN; break;
         case 'B': color = BLUE; break;
@@ -199,7 +209,7 @@ void Board::displayTile(char pathType, int pos) { // updated signature to displa
 // displays the track for a specific player
 void Board::displayTrack(int player_index) {
     // determine player's path to display the correct board
-    char pathType = (players[player_index].getPath() == "P") ? 'P' : 'T'; //path type for display
+    char pathType = (players[player_index].getPath() == "P") ? 'P' : 'T'; // path type for display
 
     for (int i = 0; i < _BOARD_SIZE; i++) {
         // call the new displayTile with pathType
@@ -211,9 +221,9 @@ void Board::displayTrack(int player_index) {
 // displays the entire board for all players
 void Board::displayBoard() {
     // display pride lands board separately
-    cout << "Pride Lands Board:" << endl; //label pride lands board
+    cout << "Pride Lands Board:" << endl; // label pride lands board
     for (int i = 0; i < _BOARD_SIZE; i++) {
-        displayTile('P', i); //display each tile for pride lands
+        displayTile('P', i); // display each tile for pride lands
     }
     cout << endl;
 
@@ -227,117 +237,165 @@ void Board::displayBoard() {
 
 // moves a player forward and applies tile effects
 bool Board::movePlayer(int player_index, int spinner) {
-    // determine player's path and select correct board
-    char pathType = (players[player_index].getPath() == "P") ? 'P' : 'T'; // player path type
-    Tile* currentBoard = (pathType == 'P') ? _prideTiles : _cubTiles; //select correct board array
+    // Determine player's path type
+    char pathType = (players[player_index].getPath() == "P") ? 'P' : 'T'; // P for Pride Lands and T for Cub Training
 
-    // calculates the final position of the player after the spin
+    // calculates a  new position
     int newPosition = _player_positions[player_index] + spinner;
     int oldPosition = _player_positions[player_index];
-    //IF NEW POSITION < 0, POSITION = 0 this is for graveyards and such
-    // this is so that the player still shouldn't go farther than the board size
-    if (newPosition >= _BOARD_SIZE) {
-        _player_positions[player_index] = _BOARD_SIZE - 1; // if they do exceed the board size it just puts them on the final tile
 
-        // pride rock event trigger 
-        Tile finalTile = currentBoard[_player_positions[player_index]];
-        finalTile.prideRock();
+    //ensure new position doesnt exceed board size
+    if (newPosition >= _BOARD_SIZE) {
+        _player_positions[player_index] = _BOARD_SIZE - 1; // Move to final tile
+
+        //trigger Pride Rock event
+        if (pathType == 'P') {
+            Tile finalTile = _prideTiles[_player_positions[player_index]];
+            finalTile.prideRock();
+            _prideTiles[_player_positions[player_index]] = finalTile;
+        } else {
+            Tile finalTile = _cubTiles[_player_positions[player_index]];
+            finalTile.prideRock();
+            _cubTiles[_player_positions[player_index]] = finalTile;
+        }
 
         return true;
     }
 
-    // update players position to the new position
+    // update player position new
     _player_positions[player_index] = newPosition;
 
-    // trigger the regular event for the tile the player landed on
-    Tile currentTile = currentBoard[newPosition];
-
-    //VARIABLES USED IN TILE INTERACTIONS
-    int choice = 0;
-    int advChoice = 0;
-    string advSwitch = "";
-    string riddlesArray[2];
-    string eventsArray[9];
-
-    // determine path number for events (0 for T, 1 for P) as previously done by getPathNum()
-    int pathNum = (players[player_index].getPath() == "T") ? 0 : 1; // compute pathNum manually
-
-    //DIFFERENT TILES
-    if(currentTile.getColor() == 'G'){ //GREEN TILE EVENTS
-        duringTurnBoard();
-        size_t eventChoice = rand() % _eventsVec.size(); // renamed local var to not conflict with int choice above
-        split(_eventsVec[eventChoice], '|', eventsArray, 9);
-        while(stoi(eventsArray[1]) != pathNum && stoi(eventsArray[1]) != 0 
-        && split(_eventsVec[eventChoice], '|', eventsArray, 9) == -1){ 
-            eventChoice = rand() % _eventsVec.size();
-            split(_eventsVec[eventChoice], '|', eventsArray, 9);
-        }
-        players[player_index].addPride(currentTile.grassLand(eventsArray, players[player_index].getAdvisorNum(), players[player_index].getAge()));
-    } else if(currentTile.getColor() == 'B'){ //OASIS TILE
-        duringTurnBoard();
-        auto [strengthChange, staminaChange, wisdomChange] = currentTile.oasisTile();
-        players[player_index].addStrength(strengthChange);
-        players[player_index].addStamina(staminaChange);
-        players[player_index].addWisdom(wisdomChange);
-    } else if(currentTile.getColor() == 'P'){ //ADVISOR TILE
-        duringTurnBoard();
-        if(players[player_index].getAdvisor() != ""){
-            cout<<"Would you like to swtich your advisor? (1 = Yes | 2 = No)"<<endl;
-            choice = checkValid(1, 2, choice);
-            if(choice == 1){
-                players[player_index].printAdvisors(_advisorVec);
-                advChoice = checkValid(1, static_cast<int> (_advisorVec.size()), advChoice);
-                advSwitch = players[player_index].getAdvisor();
-                players[player_index].setAdvisor(_advisorVec, advChoice);
-                _advisorVec.erase(_advisorVec.begin() + advChoice - 1);
-                _advisorVec.push_back(advSwitch);
-            } else if(choice == 2){
-                cout<<"Your advisor thanks you for staying with them."<<endl;
-            }
-        } else{
-            cout << "Player " << player_index + 1 << ", please select your advisor." << endl;
-            players[player_index].printAdvisors(_advisorVec);
-            int advisorChoice = 0;
-            advisorChoice = checkValid(1, static_cast<int> (_advisorVec.size()), advisorChoice);
-            players[player_index].setAdvisor(_advisorVec, advisorChoice);
-            _advisorVec.erase(_advisorVec.begin() + advisorChoice - 1);
-        }
-    } else if(currentTile.getColor() == 'R'){ //GRAVEYARD TILE
-        duringTurnBoard();
-        auto [strengthChange, staminaChange, wisdomChange] = currentTile.graveYard();
-        players[player_index].addStrength(strengthChange);
-        players[player_index].addStamina(staminaChange);
-        players[player_index].addWisdom(wisdomChange);
-        //Move player index back 10.
-        _player_positions[player_index] = newPosition - 10;
-        if(_player_positions[player_index] < 0){
-            _player_positions[player_index] = 0;
-        }
-    } else if(currentTile.getColor() == 'N'){ //HYENA TILE
-        duringTurnBoard();
-        players[player_index].addStamina(currentTile.hyenaTile());
-        //Move to previous index
-        _player_positions[player_index] = oldPosition;
-    } else if(currentTile.getColor() == 'U'){ //RIDDLE TILE
-        duringTurnBoard();
-        size_t rChoice = rand() % _riddleVec.size(); // renamed variable to avoid shadowing choice
-        split(_riddleVec[rChoice], '|', riddlesArray, 2);
-        while(split(_riddleVec[rChoice], '|', riddlesArray, 2) == -1){
-            rChoice = rand() % _riddleVec.size();
-            split(_riddleVec[rChoice], '|', riddlesArray, 2);
-        }
-        int wisdomChange = currentTile.riddleTile(riddlesArray);
-        players[player_index].addWisdom(wisdomChange);
+    //access the current tile based on path type
+    Tile currentTile;
+    if (pathType == 'P') {
+        currentTile = _prideTiles[newPosition];
+    } else {
+        currentTile = _cubTiles[newPosition];
     }
-    
-    //checking to make sure players stats aren't negative
-    if(players[player_index].getStrength() < 0){
+
+    //handle tile effects based on tile color
+    switch (currentTile.getColor()) {
+        case 'G': { // GREEN TILE EVENTS
+            duringTurnBoard();
+            size_t eventChoice = rand() % _eventsVec.size(); // renamed local var to not conflict with int choice above
+            string eventsArray[9];
+            split(_eventsVec[eventChoice], '|', eventsArray, 9);
+            while (stoi(eventsArray[1]) != (pathType == 'T' ? 0 : 1) &&
+                   stoi(eventsArray[1]) != 0 &&
+                   split(_eventsVec[eventChoice], '|', eventsArray, 9) == -1) { 
+                eventChoice = rand() % _eventsVec.size();
+                split(_eventsVec[eventChoice], '|', eventsArray, 9);
+            }
+            if (pathType == 'P') {
+                // assuming grassLand returns the pride points to add
+                int pridePoints = _prideTiles[newPosition].grassLand(eventsArray, players[player_index].getAdvisorNum(), players[player_index].getAge());
+                players[player_index].addPride(pridePoints);
+            } else {
+                // assuming grassLand returns the pride points to add
+                int pridePoints = _cubTiles[newPosition].grassLand(eventsArray, players[player_index].getAdvisorNum(), players[player_index].getAge());
+                players[player_index].addPride(pridePoints);
+            }
+            break;
+        }
+        case 'B': { // OASIS TILE
+            duringTurnBoard();
+            int strengthChange, staminaChange, wisdomChange;
+            if (pathType == 'P') {
+                tie(strengthChange, staminaChange, wisdomChange) = _prideTiles[newPosition].oasisTile();
+            } else {
+                tie(strengthChange, staminaChange, wisdomChange) = _cubTiles[newPosition].oasisTile();
+            }
+            players[player_index].addStrength(strengthChange);
+            players[player_index].addStamina(staminaChange);
+            players[player_index].addWisdom(wisdomChange);
+            break;
+        }
+        case 'P': { // ADVISOR TILE
+            duringTurnBoard();
+            if (players[player_index].getAdvisor() != "") {
+                cout << "Would you like to switch your advisor? (1 = Yes | 2 = No)" << endl;
+                int choice = checkValid(1, 2, 0);
+                if (choice == 1) {
+                    players[player_index].printAdvisors(_advisorVec);
+                    int advChoice = checkValid(1, static_cast<int>(_advisorVec.size()), 0);
+                    string advSwitch = players[player_index].getAdvisor();
+                    players[player_index].setAdvisor(_advisorVec, advChoice);
+                    _advisorVec.erase(_advisorVec.begin() + advChoice - 1);
+                    _advisorVec.push_back(advSwitch);
+                } else if (choice == 2) {
+                    cout << "Your advisor thanks you for staying with them." << endl;
+                }
+            } else {
+                cout << "Player " << player_index + 1 << ", please select your advisor." << endl;
+                players[player_index].printAdvisors(_advisorVec);
+                int advisorChoice = 0;
+                advisorChoice = checkValid(1, static_cast<int>(_advisorVec.size()), advisorChoice);
+                players[player_index].setAdvisor(_advisorVec, advisorChoice);
+                _advisorVec.erase(_advisorVec.begin() + advisorChoice - 1);
+            }
+            break;
+        }
+        case 'R': { // GRAVEYARD TILE
+            duringTurnBoard();
+            int strengthChange, staminaChange, wisdomChange;
+            if (pathType == 'P') {
+                tie(strengthChange, staminaChange, wisdomChange) = _prideTiles[newPosition].graveYard();
+            } else {
+                tie(strengthChange, staminaChange, wisdomChange) = _cubTiles[newPosition].graveYard();
+            }
+            players[player_index].addStrength(strengthChange);
+            players[player_index].addStamina(staminaChange);
+            players[player_index].addWisdom(wisdomChange);
+            // move player index back 10
+            _player_positions[player_index] = newPosition - 10;
+            if (_player_positions[player_index] < 0) {
+                _player_positions[player_index] = 0;
+            }
+            break;
+        }
+        case 'N': { // HYENA TILE
+            duringTurnBoard();
+            int staminaChange;
+            if (pathType == 'P') {
+                staminaChange = _prideTiles[newPosition].hyenaTile();
+            } else {
+                staminaChange = _cubTiles[newPosition].hyenaTile();
+            }
+            players[player_index].addStamina(staminaChange);
+            // move to previous index
+            _player_positions[player_index] = oldPosition;
+            break;
+        }
+        case 'U': { // RIDDLE TILE
+            duringTurnBoard();
+            size_t rChoice = rand() % _riddleVec.size(); // renamed variable to avoid shadowing choice
+            string riddlesArray[2];
+            split(_riddleVec[rChoice], '|', riddlesArray, 2);
+            while (split(_riddleVec[rChoice], '|', riddlesArray, 2) == -1) {
+                rChoice = rand() % _riddleVec.size();
+                split(_riddleVec[rChoice], '|', riddlesArray, 2);
+            }
+            int wisdomChange;
+            if (pathType == 'P') {
+                wisdomChange = _prideTiles[newPosition].riddleTile(riddlesArray);
+            } else {
+                wisdomChange = _cubTiles[newPosition].riddleTile(riddlesArray);
+            }
+            players[player_index].addWisdom(wisdomChange);
+            break;
+        }
+        default:
+            break;
+    }
+
+    // checking to make sure players stats aren't negative
+    if (players[player_index].getStrength() < 0) {
         players[player_index].setStrength(0);
     }
-    if(players[player_index].getStamina() < 0){
+    if (players[player_index].getStamina() < 0) {
         players[player_index].setStamina(0);
     }
-    if(players[player_index].getWisdom() < 0){
+    if (players[player_index].getWisdom() < 0) {
         players[player_index].setWisdom(0);
     }
 
@@ -345,7 +403,7 @@ bool Board::movePlayer(int player_index, int spinner) {
 }
 
 // checks if a player is on a specific tile for a given path type
-bool Board::isPlayerOnTile(int player_index, char pathType, int pos) { //implementation now matches declaration
+bool Board::isPlayerOnTile(int player_index, char pathType, int pos) { // implementation now matches declaration
     // checks if the player is on the specified pathType board at the given position
     if ((pathType == 'P' && players[player_index].getPath() == "P") ||
         (pathType == 'T' && players[player_index].getPath() == "T")) { // ensure path type matches player's path
@@ -387,31 +445,41 @@ void Board::importFiles() {
         exit(0);
     } else {
         string input;
-        string worthless; // Will be used to get rid of lines we don't want players to see
+        string worthless; //will be used to get rid of lines we don't want players to see
         getline(characters, worthless);
         while (!characters.eof()) {
             getline(characters, input);
-            _characterVec.push_back(input);
+            if (!input.empty()) {
+                _characterVec.push_back(input);
+            }
         }
         while (!advisors.eof()) {
             getline(advisors, input);
-            _advisorVec.push_back(input);
+            if (!input.empty()) {
+                _advisorVec.push_back(input);
+            }
         }
         getline(riddles, worthless);
         while (!riddles.eof()) {
             getline(riddles, input);
-            _riddleVec.push_back(input);
+            if (!input.empty()) {
+                _riddleVec.push_back(input);
+            }
         }
         while (!gameRules.eof()) {
             getline(gameRules, input);
-            _ruleVec.push_back(input);
+            if (!input.empty()) {
+                _ruleVec.push_back(input);
+            }
         }
         for(int i = 0; i < 3; i++){
             getline(events, worthless);
         }
         while (!events.eof()) {
             getline(events, input);
-            _eventsVec.push_back(input);
+            if (!input.empty()) {
+                _eventsVec.push_back(input);
+            }
         }
         // removes #._ from beginning of advisorVec
         for (int j = 0; j < _advisorVec.size(); j++) { // cast size to int for loop
@@ -437,17 +505,17 @@ int Board::checkValid(int start, int end, int choice){
             cin.clear();
             cin.ignore(100, '\n');
             cout << "Invalid input."<<endl;;
-        }else if(choice < start || choice > end){
+        } else if(choice < start || choice > end){
             cout << "Invalid input."<<endl;
-        }else{
+        } else{
             return choice;
         }
     }
 }
 
 void Board::printLines(){
-    cout<<"------------------------------------------------------------------------------------------------------------------------------------";
-    cout<<"------------------------"<<endl;
+    cout << "------------------------------------------------------------------------------------------------------------------------------------";
+    cout << "------------------------" << endl;
 }
 
 void Board::duringTurnBoard(){
@@ -458,6 +526,6 @@ void Board::duringTurnBoard(){
 
 void Board::displayRules(){
     for(size_t i = 0; i < _ruleVec.size(); i++){
-        cout<<_ruleVec[i]<<endl;
+        cout << _ruleVec[i] << endl;
     }
 }
